@@ -8,13 +8,7 @@
       "includePath": [
         "/opt/ros/noetic/include/**",
         "/home/sevag/ur_ws/devel/include/**",
-        "/home/sevag/ur_ws/src/DORA/drivers/Universal_Robots_ROS_Driver/controller_stopper/include/**",
         "/home/sevag/ur_ws/src/desktop_arm/include/**",
-        "/home/sevag/ur_ws/src/DORA/gpd_ros/include/**",
-        "/home/sevag/ur_ws/src/DORA/mujoco_ros_control/include/**",
-        "/home/sevag/ur_ws/src/DORA/drivers/Universal_Robots_ROS_Driver/ur_calibration/include/**",
-        "/home/sevag/ur_ws/src/DORA/drivers/universal_robot/ur_kinematics/include/**",
-        "/home/sevag/ur_ws/src/DORA/drivers/Universal_Robots_ROS_Driver/ur_robot_driver/include/**",
         "/usr/include/**"
       ],
       "name": "ROS",

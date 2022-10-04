@@ -1,0 +1,92 @@
+ur10_arm_controller:
+  type: effort_controllers/JointTrajectoryController
+  joints:
+    - UR10__base_to_shoulder_pan_joint
+    - UR10__shoulder_pan_to_upper_arm_joint
+    - UR10__upper_arm_to_fore_arm_joint
+    - UR10__fore_arm_to_wrist_1_joint
+    - UR10__wrist_1_to_wrist_2_joint
+    - UR10__wrist_2_to_wrist_3_joint
+  gains:
+    UR10__base_to_shoulder_pan_joint:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    UR10__shoulder_pan_to_upper_arm_joint:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    UR10__upper_arm_to_fore_arm_joint:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    UR10__fore_arm_to_wrist_1_joint:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    UR10__wrist_1_to_wrist_2_joint:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    UR10__wrist_2_to_wrist_3_joint:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+bh282_gripper_controller:
+  type: effort_controllers/JointTrajectoryController
+  joints:
+    - BH282__base_to_finger_11_joint
+    - BH282__finger_11_to_finger_12_joint
+    - BH282__finger_12_to_finger_13_joint
+    - BH282__base_to_finger_21_joint
+    - BH282__finger_21_to_finger_22_joint
+    - BH282__finger_22_to_finger_23_joint
+    - BH282__finger_31_to_finger_32_joint
+    - BH282__finger_32_to_finger_33_joint
+  gains:
+    BH282__base_to_finger_11_joint:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    BH282__finger_11_to_finger_12_joint:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    BH282__finger_12_to_finger_13_joint:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    BH282__base_to_finger_21_joint:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    BH282__finger_21_to_finger_22_joint:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    BH282__finger_22_to_finger_23_joint:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    BH282__finger_31_to_finger_32_joint:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1
+    BH282__finger_32_to_finger_33_joint:
+      p: 100
+      d: 1
+      i: 1
+      i_clamp: 1

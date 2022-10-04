@@ -42,7 +42,7 @@ def append_df_to_excel(filename, df, sheet_name='Sheet1', startrow=None,
                        (default: 'Sheet1')
     @param startrow: upper left cell row to dump data frame.
                      Per default (startrow=None) calculate the last row
-                     in the existing DF and write to the next row...
+                     in the existing DF and write to the next row
     @param truncate_sheet: truncate (remove and recreate) [sheet_name]
                            before writing DataFrame to Excel file
     @param to_excel_kwargs: arguments which will be passed to `DataFrame.to_excel()`
@@ -199,18 +199,19 @@ if __name__ == "__main__":
 
     # writing the file paths for each metrics
     if(is_dynamic):
-        file_path_ee = os.path.abspath("../data/"+local_planner_alg+"/"+world_name+"/benchmarking_ee_path_"+world_name+"_dynamic_v2.xlsx")
-        file_paths_paths = os.path.abspath("../data/"+local_planner_alg+"/"+world_name+"/benchmarking_paths_"+world_name+"_dynamic_v2.xlsx")
-        file_path_others = os.path.abspath("../data/"+local_planner_alg+"/"+world_name+"/benchmarking_other_"+world_name+"_dynamic_v2.xlsx")
+        file_path_ee = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_ee_path_"+world_name+"_dynamic.xlsx")
+        file_paths_paths = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_paths_"+world_name+"_dynamic.xlsx")
+        file_path_others = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_other_"+world_name+"_dynamic.xlsx")
     else:
-        file_path_ee = os.path.abspath("../data/"+local_planner_alg+"/"+world_name+"/benchmarking_ee_path_"+world_name+".xlsx")
-        file_paths_paths = os.path.abspath("../data/"+local_planner_alg+"/"+world_name+"/benchmarking_paths_"+world_name+".xlsx")
-        file_path_others = os.path.abspath("../data/"+local_planner_alg+"/"+world_name+"/benchmarking_other_"+world_name+".xlsx")
+        file_path_ee = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_ee_path_"+world_name+".xlsx")
+        file_paths_paths = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_paths_"+world_name+".xlsx")
+        file_path_others = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_other_"+world_name+".xlsx")
     if move_arm:
-        file_path_arm_joints = os.path.abspath("../data/"+local_planner_alg+"/"+world_name+"/benchmarking_moved_joints_"+world_name+".xlsx")
-        file_path_ee = os.path.abspath("../data/"+local_planner_alg+"/"+world_name+"/benchmarking_moved_ee_path_"+world_name+".xlsx")
-        file_paths_paths = os.path.abspath("../data/"+local_planner_alg+"/"+world_name+"/benchmarking_moved_paths_"+world_name+".xlsx")
-        file_path_others = os.path.abspath("../data/"+local_planner_alg+"/"+world_name+"/benchmarking_moved_other_"+world_name+".xlsx")
+        file_path_arm_joints = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_moved_joints_"+world_name+".xlsx")
+        file_path_ee = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_moved_ee_path_"+world_name+".xlsx")
+        file_paths_paths = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_moved_paths_"+world_name+".xlsx")
+        file_path_others = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_moved_other_"+world_name+".xlsx")
+    
     # used for getting the final pose of the robot
     model = GetModelStateRequest()
     get_model_srv = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
@@ -247,6 +248,7 @@ if __name__ == "__main__":
         equalize_arr_length(global_planner_plan, real_path)
         equalize_arr_length(global_times, global_planner_plan)
         equalize_arr_length(local_times, real_path)
+
         # if, for some reason, the equalize_arr_length function doesn't work 
         # as inteneded, it will be caught by the ValueError
         try:
@@ -255,7 +257,7 @@ if __name__ == "__main__":
             ee_path_data = pd.DataFrame({"time": travel_info.times, "pose": travel_info.poses, "velocities": travel_info.vels})
             usual_metrics_data = pd.DataFrame({"Time taken": execution_time, "distance offset": dist_offset, "distance traveled": distance_travelled, "area between paths": path_area}, index=[0])
             joint_states_data = pd.DataFrame({"time": joint_states.times, "joint states": joint_states.states})
-            # print(joint_states_data)
+            
             rospy.logwarn("Data collected!")
             rospy.logwarn("Saving data into excel sheets")
             

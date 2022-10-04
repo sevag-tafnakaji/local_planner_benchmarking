@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="paused" default="false"/>
+  <arg name="gazebo_gui" default="true"/>
+  <arg name="initial_joint_positions" doc="Initial joint configuration of the robot"
+       default=" -J BH282__base_to_finger_11_joint 0 -J BH282__base_to_finger_21_joint 0 -J BH282__finger_11_to_finger_12_joint 1.1863 -J BH282__finger_12_to_finger_13_joint 0.2135 -J BH282__finger_21_to_finger_22_joint 1.1863 -J BH282__finger_22_to_finger_23_joint 0.2135 -J BH282__finger_31_to_finger_32_joint 1.1863 -J BH282__finger_32_to_finger_33_joint 0.2135 -J UR10__base_to_shoulder_pan_joint 0 -J UR10__fore_arm_to_wrist_1_joint -3.1415 -J UR10__shoulder_pan_to_upper_arm_joint -1.5794 -J UR10__upper_arm_to_fore_arm_joint 2.8638 -J UR10__wrist_1_to_wrist_2_joint 0 -J UR10__wrist_2_to_wrist_3_joint 0"/>
+
+  <!-- startup simulated world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" default="worlds/empty.world"/>
+    <arg name="paused" value="true"/>
+    <arg name="gui" value="$(arg gazebo_gui)"/>
+  </include>
+
+  <!-- send robot urdf to param server -->
+  <param name="robot_description" command="xacro  '$(find mobile_manipulator)/urdf/dora_new.xacro'" />
+
+  <!-- unpause only after loading robot model -->
+  <arg name="unpause" value="$(eval '' if arg('paused') else '-unpause')" />
+  <!-- push robot_description to factory and spawn robot in gazebo at the origin, change x,y,z arguments to spawn in a different position -->
+  <arg name="world_pose" value="-x 0 -y 0 -z 0" />
+  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot $(arg unpause) $(arg world_pose) $(arg initial_joint_positions)"
+    respawn="false" output="screen" />
+
+  <!-- Load joint controller parameters for Gazebo -->
+  <rosparam file="$(find realistic_dora_moveit_config)/config/gazebo_controllers.yaml" />
+  <!-- Spawn Gazebo ROS controllers -->
+  <node name="gazebo_controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" args="joint_state_controller" />
+  <!-- Load ROS controllers -->
+  <include file="$(dirname)/ros_controllers.launch"/>
+
+</launch>

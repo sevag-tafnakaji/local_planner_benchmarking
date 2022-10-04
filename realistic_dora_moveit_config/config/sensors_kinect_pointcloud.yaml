@@ -1,0 +1,12 @@
+sensors:
+  - sensor_plugin: occupancy_map_monitor/PointCloudOctomapUpdater
+    # point_cloud_topic: /camera/depth/points
+    point_cloud_topic: voxel_grid_octomap/output
+    max_range: 5.0
+    point_subsample: 1
+    padding_offset: 0.13
+    padding_scale: 1.6
+    max_update_rate: 5.0
+    shape_padding: 0.02
+    shape_scale: 0.2
+    filtered_cloud_topic: voxel_grid/output

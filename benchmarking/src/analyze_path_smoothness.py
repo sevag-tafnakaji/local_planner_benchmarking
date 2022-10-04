@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import os
 from analyze_ee_stability import extract_path
 from navigation_testing import append_df_to_excel
 
@@ -39,11 +40,11 @@ def plot_angles_from_path(path, fig_title, alg, world, trial_num, dynamic, moved
             data["angle"].append(0)
     fig = px.scatter_3d(data, x="x", y="y", z="angle", color="angle", title=fig_title)
     # fig.show()
-    image_path = "mobile_manipulator/src/benchmarking/images/"+alg.upper()+"/path_smoothness/path_smoothness_"+world+"_trial"+str(trial_num)+".png"
+    image_path = os.path.abspath("benchmarking/images/"+alg.upper()+"/path_smoothness/path_smoothness_"+world+"_trial"+str(trial_num)+".png")
     if dynamic:
-        image_path = "mobile_manipulator/src/benchmarking/images/"+alg.upper()+"/path_smoothness/dynamic_path_smoothness_"+world+"_trial"+str(trial_num)+".png"
+        image_path = os.path.abspath("benchmarking/images/"+alg.upper()+"/path_smoothness/dynamic_path_smoothness_"+world+"_trial"+str(trial_num)+".png")
     if moved:
-        image_path = "mobile_manipulator/src/benchmarking/images/"+alg.upper()+"/path_smoothness/path_moved_smoothness_"+world+"_trial"+str(trial_num)+".png"
+        image_path = os.path.abspath("benchmarking/images/"+alg.upper()+"/path_smoothness/path_moved_smoothness_"+world+"_trial"+str(trial_num)+".png")
     fig.write_image(image_path)
     return path_smoothness
 
@@ -55,11 +56,11 @@ if __name__ == "__main__":
     moving = True
     # path_smoothnesses = {"world": [], "smoothness": [], "datatype": []}
     # path_smoothnesses = pd.DataFrame(path_smoothnesses)
-    file_path = "benchmarking/data/"+alg.upper()+"/path_smoothness.xlsx"
+    file_path = os.path.abspath("benchmarking/data/"+alg.upper()+"/path_smoothness.xlsx")
     if dynamic:
-        file_path = "benchmarking/data/"+alg.upper()+"/path_smoothness_dynamic.xlsx"
+        file_path = os.path.abspath("benchmarking/data/"+alg.upper()+"/path_smoothness_dynamic.xlsx")
     if moving:
-        file_path = "benchmarking/data/"+alg.upper()+"/path_moving_smoothness.xlsx"
+        file_path = os.path.abspath("benchmarking/data/"+alg.upper()+"/path_moving_smoothness.xlsx")
     path_smoothnesses = [pd.DataFrame() for i in range(0,len(worlds))]
     for n,world in enumerate(worlds):
         print("Currently working on "+world)
@@ -67,11 +68,11 @@ if __name__ == "__main__":
         average_data = {"smoothness": [], "datatype": ["average"]} 
         for j in range(0,10):
             print("Trial Nr."+str(j+1))
-            data_file = pd.read_excel("benchmarking/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_paths_"+world.lower()+".xlsx", sheet_name=j, header=0)
+            data_file = pd.read_excel(os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_paths_"+world.lower()+".xlsx"), sheet_name=j, header=0)
             if dynamic:
-                data_file = pd.read_excel("benchmarking/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_paths_"+world.lower()+"_dynamic.xlsx", sheet_name=j, header=0)
+                data_file = pd.read_excel(os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_paths_"+world.lower()+"_dynamic.xlsx"), sheet_name=j, header=0)
             if moving:
-                data_file = pd.read_excel("benchmarking/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_moved_paths_"+world.lower()+".xlsx", sheet_name=j, header=0)
+                data_file = pd.read_excel(os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_moved_paths_"+world.lower()+".xlsx"), sheet_name=j, header=0)
             travelled_path = extract_path(data_file)
             figure_title = "angles along path, "+alg.upper()+" in "+world+": Trial "+str(j+1)
             if dynamic:

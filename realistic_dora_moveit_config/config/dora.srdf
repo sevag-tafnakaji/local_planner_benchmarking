@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This does not replace URDF, and is not an extension of URDF.
+    This is a format for representing semantic information about the robot structure.
+    A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
+-->
+<robot name="dora">
+    <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
+    <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
+    <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
+    <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
+    <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
+    <group name="ur10_arm">
+        <chain base_link="UR10_base_link" tip_link="UR10_end_effector_link"/>
+    </group>
+    <group name="bh282_gripper">
+        <link name="BH282_base_link"/>
+        <link name="BH282_finger_11_link"/>
+        <link name="BH282_finger_12_link"/>
+        <link name="BH282_finger_13_link"/>
+        <link name="BH282_finger_21_link"/>
+        <link name="BH282_finger_22_link"/>
+        <link name="BH282_finger_23_link"/>
+        <link name="BH282_finger_31_link"/>
+        <link name="BH282_finger_32_link"/>
+        <link name="BH282_finger_33_link"/>
+        <joint name="BH282_base_joint_fixed"/>
+        <joint name="BH282__base_to_finger_11_joint"/>
+        <joint name="BH282__finger_11_to_finger_12_joint"/>
+        <joint name="BH282__finger_12_to_finger_13_joint"/>
+        <joint name="BH282__base_to_finger_21_joint"/>
+        <joint name="BH282__finger_21_to_finger_22_joint"/>
+        <joint name="BH282__finger_22_to_finger_23_joint"/>
+        <joint name="BH282__base_to_finger_31_joint_fixed"/>
+        <joint name="BH282__finger_31_to_finger_32_joint"/>
+        <joint name="BH282__finger_32_to_finger_33_joint"/>
+    </group>
+    <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
+    <group_state name="Folded" group="ur10_arm">
+        <joint name="UR10__base_to_shoulder_pan_joint" value="0"/>
+        <joint name="UR10__fore_arm_to_wrist_1_joint" value="-3.1415"/>
+        <joint name="UR10__shoulder_pan_to_upper_arm_joint" value="-1.5794"/>
+        <joint name="UR10__upper_arm_to_fore_arm_joint" value="2.8638"/>
+        <joint name="UR10__wrist_1_to_wrist_2_joint" value="0"/>
+        <joint name="UR10__wrist_2_to_wrist_3_joint" value="0"/>
+    </group_state>
+    <group_state name="Up" group="ur10_arm">
+        <joint name="UR10__base_to_shoulder_pan_joint" value="0"/>
+        <joint name="UR10__fore_arm_to_wrist_1_joint" value="0"/>
+        <joint name="UR10__shoulder_pan_to_upper_arm_joint" value="0"/>
+        <joint name="UR10__upper_arm_to_fore_arm_joint" value="0"/>
+        <joint name="UR10__wrist_1_to_wrist_2_joint" value="0"/>
+        <joint name="UR10__wrist_2_to_wrist_3_joint" value="0"/>
+    </group_state>
+    <group_state name="grasp_waypoint_top" group="ur10_arm">
+        <joint name="UR10__base_to_shoulder_pan_joint" value="0"/>
+        <joint name="UR10__fore_arm_to_wrist_1_joint" value="-1.57"/>
+        <joint name="UR10__shoulder_pan_to_upper_arm_joint" value="0"/>
+        <joint name="UR10__upper_arm_to_fore_arm_joint" value="1.58"/>
+        <joint name="UR10__wrist_1_to_wrist_2_joint" value="0"/>
+        <joint name="UR10__wrist_2_to_wrist_3_joint" value="0"/>
+    </group_state>
+    <group_state name="grasp_waypoint_folded" group="ur10_arm">
+        <joint name="UR10__base_to_shoulder_pan_joint" value="0"/>
+        <joint name="UR10__fore_arm_to_wrist_1_joint" value="0.2256"/>
+        <joint name="UR10__shoulder_pan_to_upper_arm_joint" value="0"/>
+        <joint name="UR10__upper_arm_to_fore_arm_joint" value="2.8291"/>
+        <joint name="UR10__wrist_1_to_wrist_2_joint" value="3.1415"/>
+        <joint name="UR10__wrist_2_to_wrist_3_joint" value="0"/>
+    </group_state>
+    <group_state name="Gripped" group="bh282_gripper">
+        <joint name="BH282__base_to_finger_11_joint" value="0"/>
+        <joint name="BH282__base_to_finger_21_joint" value="0"/>
+        <joint name="BH282__finger_11_to_finger_12_joint" value="1.1863"/>
+        <joint name="BH282__finger_12_to_finger_13_joint" value="0.2135"/>
+        <joint name="BH282__finger_21_to_finger_22_joint" value="1.1863"/>
+        <joint name="BH282__finger_22_to_finger_23_joint" value="0.2135"/>
+        <joint name="BH282__finger_31_to_finger_32_joint" value="1.1863"/>
+        <joint name="BH282__finger_32_to_finger_33_joint" value="0.2135"/>
+    </group_state>
+    <group_state name="Open" group="bh282_gripper">
+        <joint name="BH282__base_to_finger_11_joint" value="0"/>
+        <joint name="BH282__base_to_finger_21_joint" value="0"/>
+        <joint name="BH282__finger_11_to_finger_12_joint" value="0"/>
+        <joint name="BH282__finger_12_to_finger_13_joint" value="0"/>
+        <joint name="BH282__finger_21_to_finger_22_joint" value="0"/>
+        <joint name="BH282__finger_22_to_finger_23_joint" value="0"/>
+        <joint name="BH282__finger_31_to_finger_32_joint" value="0"/>
+        <joint name="BH282__finger_32_to_finger_33_joint" value="0"/>
+    </group_state>
+    <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
+    <end_effector name="BH282_gripper" parent_link="UR10_end_effector_link" group="bh282_gripper" parent_group="ur10_arm"/>
+    <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
+    <virtual_joint name="virtual_joint" type="planar" parent_frame="map" child_link="MiR_footprint"/>
+    <!--PASSIVE JOINT: Purpose: this element is used to mark joints that are not actuated-->
+    <passive_joint name="MiR__base_bl_caster_rotation_joint"/>
+    <passive_joint name="MiR__base_bl_caster_wheel_joint"/>
+    <passive_joint name="MiR__base_br_caster_rotation_joint"/>
+    <passive_joint name="MiR__base_br_caster_wheel_joint"/>
+    <passive_joint name="MiR__base_fl_caster_rotation_joint"/>
+    <passive_joint name="MiR__base_fl_caster_wheel_joint"/>
+    <passive_joint name="MiR__base_fr_caster_rotation_joint"/>
+    <passive_joint name="MiR__base_fr_caster_wheel_joint"/>
+    <passive_joint name="MiR__base_left_wheel_joint"/>
+    <passive_joint name="MiR__base_right_wheel_joint"/>
+    <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+    <disable_collisions link1="BH282_base_link" link2="BH282_finger_11_link" reason="Adjacent"/>
+    <disable_collisions link1="BH282_base_link" link2="BH282_finger_12_link" reason="Never"/>
+    <disable_collisions link1="BH282_base_link" link2="BH282_finger_21_link" reason="Adjacent"/>
+    <disable_collisions link1="BH282_base_link" link2="BH282_finger_22_link" reason="Never"/>
+    <disable_collisions link1="BH282_base_link" link2="BH282_finger_31_link" reason="Adjacent"/>
+    <disable_collisions link1="BH282_base_link" link2="BH282_finger_32_link" reason="Never"/>
+    <disable_collisions link1="BH282_base_link" link2="BH282_finger_33_link" reason="Never"/>
+    <disable_collisions link1="BH282_base_link" link2="UR10_end_effector_link" reason="Adjacent"/>
+    <disable_collisions link1="BH282_base_link" link2="UR10_wrist_1_link" reason="Never"/>
+    <disable_collisions link1="BH282_base_link" link2="UR10_wrist_2_link" reason="Never"/>
+    <disable_collisions link1="BH282_base_link" link2="UR10_wrist_3_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_11_link" link2="BH282_finger_12_link" reason="Adjacent"/>
+    <disable_collisions link1="BH282_finger_11_link" link2="BH282_finger_13_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_11_link" link2="BH282_finger_21_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_11_link" link2="BH282_finger_22_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_11_link" link2="BH282_finger_23_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_11_link" link2="BH282_finger_31_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_11_link" link2="BH282_finger_32_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_11_link" link2="BH282_finger_33_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_11_link" link2="UR10_end_effector_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_11_link" link2="UR10_wrist_1_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_11_link" link2="UR10_wrist_2_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_11_link" link2="UR10_wrist_3_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_12_link" link2="BH282_finger_13_link" reason="Adjacent"/>
+    <disable_collisions link1="BH282_finger_12_link" link2="BH282_finger_21_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_12_link" link2="BH282_finger_22_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_12_link" link2="BH282_finger_31_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_12_link" link2="BH282_finger_32_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_12_link" link2="MiR_br_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_12_link" link2="UR10_end_effector_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_12_link" link2="UR10_wrist_1_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_12_link" link2="UR10_wrist_2_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_12_link" link2="UR10_wrist_3_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_13_link" link2="BH282_finger_21_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_13_link" link2="UR10_end_effector_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_13_link" link2="UR10_wrist_1_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_13_link" link2="UR10_wrist_2_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_13_link" link2="UR10_wrist_3_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_21_link" link2="BH282_finger_22_link" reason="Adjacent"/>
+    <disable_collisions link1="BH282_finger_21_link" link2="BH282_finger_23_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_21_link" link2="BH282_finger_31_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_21_link" link2="BH282_finger_32_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_21_link" link2="BH282_finger_33_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_21_link" link2="UR10_end_effector_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_21_link" link2="UR10_wrist_1_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_21_link" link2="UR10_wrist_2_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_21_link" link2="UR10_wrist_3_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_22_link" link2="BH282_finger_23_link" reason="Adjacent"/>
+    <disable_collisions link1="BH282_finger_22_link" link2="BH282_finger_31_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_22_link" link2="BH282_finger_32_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_22_link" link2="MiR_br_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_22_link" link2="UR10_end_effector_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_22_link" link2="UR10_wrist_1_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_22_link" link2="UR10_wrist_2_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_22_link" link2="UR10_wrist_3_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_23_link" link2="UR10_end_effector_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_23_link" link2="UR10_wrist_1_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_23_link" link2="UR10_wrist_2_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_23_link" link2="UR10_wrist_3_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_31_link" link2="BH282_finger_32_link" reason="Adjacent"/>
+    <disable_collisions link1="BH282_finger_31_link" link2="BH282_finger_33_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_31_link" link2="MiR_back_laser_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_31_link" link2="UR10_end_effector_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_31_link" link2="UR10_wrist_1_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_31_link" link2="UR10_wrist_2_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_31_link" link2="UR10_wrist_3_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_32_link" link2="BH282_finger_33_link" reason="Adjacent"/>
+    <disable_collisions link1="BH282_finger_32_link" link2="MiR_back_laser_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_32_link" link2="MiR_br_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_32_link" link2="UR10_end_effector_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_32_link" link2="UR10_wrist_1_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_32_link" link2="UR10_wrist_2_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_32_link" link2="UR10_wrist_3_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_33_link" link2="UR10_end_effector_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_33_link" link2="UR10_wrist_1_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_33_link" link2="UR10_wrist_2_link" reason="Never"/>
+    <disable_collisions link1="BH282_finger_33_link" link2="UR10_wrist_3_link" reason="Never"/>
+    <disable_collisions link1="MiR_back_laser_link" link2="MiR_base_link" reason="Adjacent"/>
+    <disable_collisions link1="MiR_back_laser_link" link2="MiR_bl_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="MiR_back_laser_link" link2="MiR_bl_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_back_laser_link" link2="MiR_br_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="MiR_back_laser_link" link2="MiR_br_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_back_laser_link" link2="MiR_fl_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="MiR_back_laser_link" link2="MiR_fl_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_back_laser_link" link2="MiR_fr_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="MiR_back_laser_link" link2="MiR_fr_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_back_laser_link" link2="MiR_front_laser_link" reason="Never"/>
+    <disable_collisions link1="MiR_back_laser_link" link2="MiR_left_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_back_laser_link" link2="MiR_right_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_back_laser_link" link2="UR10_base_link" reason="Never"/>
+    <disable_collisions link1="MiR_back_laser_link" link2="UR10_end_effector_link" reason="Never"/>
+    <disable_collisions link1="MiR_back_laser_link" link2="UR10_shoulder_pan_link" reason="Never"/>
+    <disable_collisions link1="MiR_back_laser_link" link2="UR10_upper_arm_link" reason="Never"/>
+    <disable_collisions link1="MiR_back_laser_link" link2="controlbox" reason="Never"/>
+    <disable_collisions link1="MiR_base_link" link2="MiR_bl_caster_rotation_link" reason="Adjacent"/>
+    <disable_collisions link1="MiR_base_link" link2="MiR_bl_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_base_link" link2="MiR_br_caster_rotation_link" reason="Adjacent"/>
+    <disable_collisions link1="MiR_base_link" link2="MiR_br_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_base_link" link2="MiR_fl_caster_rotation_link" reason="Adjacent"/>
+    <disable_collisions link1="MiR_base_link" link2="MiR_fl_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_base_link" link2="MiR_fr_caster_rotation_link" reason="Adjacent"/>
+    <disable_collisions link1="MiR_base_link" link2="MiR_fr_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_base_link" link2="MiR_front_laser_link" reason="Adjacent"/>
+    <disable_collisions link1="MiR_base_link" link2="MiR_left_wheel_link" reason="Adjacent"/>
+    <disable_collisions link1="MiR_base_link" link2="MiR_right_wheel_link" reason="Adjacent"/>
+    <disable_collisions link1="MiR_base_link" link2="UR10_base_link" reason="Never"/>
+    <disable_collisions link1="MiR_base_link" link2="UR10_shoulder_pan_link" reason="Never"/>
+    <disable_collisions link1="MiR_base_link" link2="controlbox" reason="Adjacent"/>
+    <disable_collisions link1="MiR_bl_caster_rotation_link" link2="MiR_bl_caster_wheel_link" reason="Adjacent"/>
+    <disable_collisions link1="MiR_bl_caster_rotation_link" link2="MiR_br_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_rotation_link" link2="MiR_br_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_rotation_link" link2="MiR_fl_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_rotation_link" link2="MiR_fl_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_rotation_link" link2="MiR_fr_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_rotation_link" link2="MiR_fr_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_rotation_link" link2="MiR_front_laser_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_rotation_link" link2="MiR_left_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_rotation_link" link2="MiR_right_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_rotation_link" link2="UR10_base_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_rotation_link" link2="UR10_shoulder_pan_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_rotation_link" link2="UR10_upper_arm_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_rotation_link" link2="controlbox" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_wheel_link" link2="MiR_br_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_wheel_link" link2="MiR_br_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_wheel_link" link2="MiR_fl_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_wheel_link" link2="MiR_fl_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_wheel_link" link2="MiR_fr_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_wheel_link" link2="MiR_fr_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_wheel_link" link2="MiR_front_laser_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_wheel_link" link2="MiR_left_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_wheel_link" link2="MiR_right_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_wheel_link" link2="UR10_base_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_wheel_link" link2="UR10_end_effector_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_wheel_link" link2="UR10_shoulder_pan_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_wheel_link" link2="UR10_upper_arm_link" reason="Never"/>
+    <disable_collisions link1="MiR_bl_caster_wheel_link" link2="controlbox" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_rotation_link" link2="MiR_br_caster_wheel_link" reason="Adjacent"/>
+    <disable_collisions link1="MiR_br_caster_rotation_link" link2="MiR_fl_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_rotation_link" link2="MiR_fl_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_rotation_link" link2="MiR_fr_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_rotation_link" link2="MiR_fr_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_rotation_link" link2="MiR_front_laser_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_rotation_link" link2="MiR_left_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_rotation_link" link2="MiR_right_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_rotation_link" link2="UR10_base_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_rotation_link" link2="UR10_shoulder_pan_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_rotation_link" link2="UR10_upper_arm_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_rotation_link" link2="controlbox" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_wheel_link" link2="MiR_fl_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_wheel_link" link2="MiR_fl_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_wheel_link" link2="MiR_fr_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_wheel_link" link2="MiR_fr_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_wheel_link" link2="MiR_front_laser_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_wheel_link" link2="MiR_left_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_wheel_link" link2="MiR_right_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_wheel_link" link2="UR10_base_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_wheel_link" link2="UR10_end_effector_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_wheel_link" link2="UR10_shoulder_pan_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_wheel_link" link2="UR10_upper_arm_link" reason="Never"/>
+    <disable_collisions link1="MiR_br_caster_wheel_link" link2="controlbox" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_rotation_link" link2="MiR_fl_caster_wheel_link" reason="Adjacent"/>
+    <disable_collisions link1="MiR_fl_caster_rotation_link" link2="MiR_fr_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_rotation_link" link2="MiR_fr_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_rotation_link" link2="MiR_front_laser_link" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_rotation_link" link2="MiR_left_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_rotation_link" link2="MiR_right_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_rotation_link" link2="UR10_base_link" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_rotation_link" link2="UR10_shoulder_pan_link" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_rotation_link" link2="UR10_upper_arm_link" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_rotation_link" link2="controlbox" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_wheel_link" link2="MiR_fr_caster_rotation_link" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_wheel_link" link2="MiR_fr_caster_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_wheel_link" link2="MiR_front_laser_link" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_wheel_link" link2="MiR_left_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_wheel_link" link2="MiR_right_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_wheel_link" link2="UR10_base_link" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_wheel_link" link2="UR10_shoulder_pan_link" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_wheel_link" link2="UR10_upper_arm_link" reason="Never"/>
+    <disable_collisions link1="MiR_fl_caster_wheel_link" link2="controlbox" reason="Never"/>
+    <disable_collisions link1="MiR_fr_caster_rotation_link" link2="MiR_fr_caster_wheel_link" reason="Adjacent"/>
+    <disable_collisions link1="MiR_fr_caster_rotation_link" link2="MiR_front_laser_link" reason="Never"/>
+    <disable_collisions link1="MiR_fr_caster_rotation_link" link2="MiR_left_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_fr_caster_rotation_link" link2="MiR_right_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_fr_caster_rotation_link" link2="UR10_base_link" reason="Never"/>
+    <disable_collisions link1="MiR_fr_caster_rotation_link" link2="UR10_shoulder_pan_link" reason="Never"/>
+    <disable_collisions link1="MiR_fr_caster_rotation_link" link2="UR10_upper_arm_link" reason="Never"/>
+    <disable_collisions link1="MiR_fr_caster_rotation_link" link2="controlbox" reason="Never"/>
+    <disable_collisions link1="MiR_fr_caster_wheel_link" link2="MiR_front_laser_link" reason="Never"/>
+    <disable_collisions link1="MiR_fr_caster_wheel_link" link2="MiR_left_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_fr_caster_wheel_link" link2="MiR_right_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_fr_caster_wheel_link" link2="UR10_base_link" reason="Never"/>
+    <disable_collisions link1="MiR_fr_caster_wheel_link" link2="UR10_shoulder_pan_link" reason="Never"/>
+    <disable_collisions link1="MiR_fr_caster_wheel_link" link2="UR10_upper_arm_link" reason="Never"/>
+    <disable_collisions link1="MiR_fr_caster_wheel_link" link2="controlbox" reason="Never"/>
+    <disable_collisions link1="MiR_front_laser_link" link2="MiR_left_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_front_laser_link" link2="MiR_right_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_front_laser_link" link2="UR10_base_link" reason="Never"/>
+    <disable_collisions link1="MiR_front_laser_link" link2="UR10_shoulder_pan_link" reason="Never"/>
+    <disable_collisions link1="MiR_front_laser_link" link2="UR10_upper_arm_link" reason="Never"/>
+    <disable_collisions link1="MiR_front_laser_link" link2="controlbox" reason="Never"/>
+    <disable_collisions link1="MiR_left_wheel_link" link2="MiR_right_wheel_link" reason="Never"/>
+    <disable_collisions link1="MiR_left_wheel_link" link2="UR10_base_link" reason="Never"/>
+    <disable_collisions link1="MiR_left_wheel_link" link2="UR10_end_effector_link" reason="Never"/>
+    <disable_collisions link1="MiR_left_wheel_link" link2="UR10_shoulder_pan_link" reason="Never"/>
+    <disable_collisions link1="MiR_left_wheel_link" link2="UR10_upper_arm_link" reason="Never"/>
+    <disable_collisions link1="MiR_left_wheel_link" link2="controlbox" reason="Never"/>
+    <disable_collisions link1="MiR_right_wheel_link" link2="UR10_base_link" reason="Never"/>
+    <disable_collisions link1="MiR_right_wheel_link" link2="UR10_end_effector_link" reason="Never"/>
+    <disable_collisions link1="MiR_right_wheel_link" link2="UR10_shoulder_pan_link" reason="Never"/>
+    <disable_collisions link1="MiR_right_wheel_link" link2="UR10_upper_arm_link" reason="Never"/>
+    <disable_collisions link1="MiR_right_wheel_link" link2="controlbox" reason="Never"/>
+    <disable_collisions link1="UR10_base_link" link2="UR10_shoulder_pan_link" reason="Adjacent"/>
+    <disable_collisions link1="UR10_base_link" link2="UR10_upper_arm_link" reason="Never"/>
+    <disable_collisions link1="UR10_base_link" link2="UR10_wrist_1_link" reason="Never"/>
+    <disable_collisions link1="UR10_base_link" link2="UR10_wrist_2_link" reason="Never"/>
+    <disable_collisions link1="UR10_base_link" link2="controlbox" reason="Adjacent"/>
+    <disable_collisions link1="UR10_end_effector_link" link2="UR10_wrist_1_link" reason="Never"/>
+    <disable_collisions link1="UR10_end_effector_link" link2="UR10_wrist_2_link" reason="Never"/>
+    <disable_collisions link1="UR10_end_effector_link" link2="UR10_wrist_3_link" reason="Adjacent"/>
+    <disable_collisions link1="UR10_fore_arm_link" link2="UR10_upper_arm_link" reason="Adjacent"/>
+    <disable_collisions link1="UR10_fore_arm_link" link2="UR10_wrist_1_link" reason="Adjacent"/>
+    <disable_collisions link1="UR10_shoulder_pan_link" link2="UR10_upper_arm_link" reason="Adjacent"/>
+    <disable_collisions link1="UR10_shoulder_pan_link" link2="UR10_wrist_1_link" reason="Never"/>
+    <disable_collisions link1="UR10_shoulder_pan_link" link2="UR10_wrist_2_link" reason="Never"/>
+    <disable_collisions link1="UR10_shoulder_pan_link" link2="controlbox" reason="Never"/>
+    <disable_collisions link1="UR10_wrist_1_link" link2="UR10_wrist_2_link" reason="Adjacent"/>
+    <disable_collisions link1="UR10_wrist_1_link" link2="UR10_wrist_3_link" reason="Never"/>
+    <disable_collisions link1="UR10_wrist_2_link" link2="UR10_wrist_3_link" reason="Adjacent"/>
+</robot>

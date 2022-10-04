@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import pandas as pd
+import os
 import plotly.express as px
 
 if __name__ == "__main__":
@@ -25,13 +26,13 @@ if __name__ == "__main__":
 				if is_moved:
 					worlds = ["office"]
 				for world in worlds:
-					path = "benchmarking/data/"+alg+"/ee_path_smoothness.xlsx"
+					path = os.path.abspath("benchmarking/data/"+alg+"/ee_path_smoothness.xlsx")
 					world_name = world
 					if dynamic:
-						path = "benchmarking/data/"+alg+"/ee_path_smoothness_dynamic.xlsx"
+						path = os.path.abspath("benchmarking/data/"+alg+"/ee_path_smoothness_dynamic.xlsx")
 						world_name = "dynamic "+world
 					if is_moved:
-						path = "benchmarking/data/"+alg+"/ee_path_moving_smoothness.xlsx"
+						path = os.path.abspath("benchmarking/data/"+alg+"/ee_path_moving_smoothness.xlsx")
 						world_name = "arm moved, "+world
 					errors_raw = pd.read_excel(path, sheet_name=world, header=0)
 					average_error = errors_raw.iloc[-1]
@@ -41,6 +42,6 @@ if __name__ == "__main__":
 					errors["planner"].append(alg)
 					errors["world"].append(world_name)
 	fig = px.scatter_3d(errors, x="x", y="y", z="z", color="world", symbol="planner") 
-	image_path = "mobile_manipulator/src/benchmarking/images/ee_path_smoothness.png"
+	image_path = os.path.abspath("benchmarking/images/ee_path_smoothness.png")
 	fig.write_image(image_path)
 	# fig.show()

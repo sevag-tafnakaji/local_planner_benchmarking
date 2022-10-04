@@ -1,13 +1,14 @@
 import pandas as pd
 import numpy as np
+import os
 from navigation_testing import append_df_to_excel
 
 def get_data(alg, world, dynamic, sheet, if_moving):
-    file_path = "benchmarking/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_other_"+world.lower()+".xlsx"
+    file_path = os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_other_"+world.lower()+".xlsx")
     if dynamic:
-        file_path = "benchmarking/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_other_"+world.lower()+"_dynamic.xlsx"
-    if moving:
-        file_path = "benchmarking/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_moved_other_"+world.lower()+".xlsx"
+        file_path = os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_other_"+world.lower()+"_dynamic.xlsx")
+    if if_moving:
+        file_path = os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_moved_other_"+world.lower()+".xlsx")
     file_data = pd.read_excel(file_path,sheet_name=sheet,header=0)
     time = file_data["Time taken"][0]
     acc = file_data["distance offset"][0]
@@ -21,11 +22,11 @@ if __name__ == "__main__":
     worlds = ["new_maze", "complex_maze", "office", "old_maze", "playground", "warehouse"]
     dynamic = False
     moving = True
-    file_path = "benchmarking/data/"+alg.upper()+"/other_metrics.xlsx"
+    file_path = os.path.abspath("benchmarking/data/"+alg.upper()+"/other_metrics.xlsx")
     if dynamic:
-        file_path = "benchmarking/data/"+alg.upper()+"/other_metrics_dynamic.xlsx"
+        file_path = os.path.abspath("benchmarking/data/"+alg.upper()+"/other_metrics_dynamic.xlsx")
     if moving:
-        file_path = "benchmarking/data/"+alg.upper()+"/other_moving_metrics.xlsx"
+        file_path = os.path.abspath("benchmarking/data/"+alg.upper()+"/other_moving_metrics.xlsx")
     for world in worlds:
         print("Currently on world "+world)
         times = []

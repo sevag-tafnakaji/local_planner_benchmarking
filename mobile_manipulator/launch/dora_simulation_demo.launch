@@ -14,14 +14,11 @@
     <include file="$(find mobile_manipulator)/launch/includes/spawn_maze.launch.xml" />
 
     <!-- send robot urdf to param server -->
-        <param name="robot_description" command="$(find xacro)/xacro '$(find mobile_manipulator)/urdf/dora_new.xacro'" />
+        <param name="robot_description" command="$(find xacro)/xacro '$(find mobile_manipulator)/urdf/dora.xacro'" />
     
     <!-- push robot_description to factory and spawn robot in gazebo -->
         <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model Mobile_Manipulator" respawn="false" output="screen" />
 
-    <!-- spawn kinect camera -->
-    	<node name="spawn_kinect" pkg="gazebo_ros" type="spawn_model" args="-sdf -file $(find mobile_manipulator)/models/kinect/model.sdf -model kinect" respawn="false" output="screen"/>
-        
     <!-- spawn table -->
         <node name="spawn_table" pkg="gazebo_ros" type="spawn_model" args="-sdf -file $(find mobile_manipulator)/models/table/model.sdf -model table" respawn="false" output="screen"/>
 
@@ -47,9 +44,9 @@
             respawn="false" output="screen" 
         /> 
     <!-- Load the controllers for the BH282 -->
-        <rosparam file="$(find onrobot_rg6_visualization)/cfg/rg6_controller.yaml" command="load"/>
+        <rosparam file="$(find bh282_hand)/cfg/controller/bh282_hand_controller.yaml" command="load"/>
      <!-- Spawn the BH282 controllers -->    
-        <node name="rg6_gripper_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn rg6_gripper_controller" 
+        <node name="bh282_hand_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn bh282_gripper_controller" 
             respawn="false" output="screen" 
         /> 
 
@@ -107,46 +104,8 @@
             <param name="range_max" value="50.0"/>
         </node>
 
-        <!-- Python files that find the can, its centerpoint, 
-        publishes it as navigation goal and gets the gripper to it -->
-        <node name="camera_center_point" pkg="mobile_manipulator" type="point_cloud_subscriber.py"/>
-        <node name="navigation_publisher" pkg="mobile_manipulator" type="navigation_goal.py"/>
-        <node name="grasp_pose_subscriber" pkg="mobile_manipulator" type="grasp_pose_subscriber_sim.py" output="screen"/>
-
-        <include file = "$(find mobile_manipulator)/launch/pcl.launch"/>
-
-        <!-- Combines the laser inputs into a single topic for use in amcl -->
-        <!-- <node pkg="topic_tools" type="relay" name="b_scan_relay" args="b_scan scan"/>
-        <node pkg="topic_tools" type="relay" name="f_scan_relay" args="f_scan scan"/>-->
-
-        <!-- Creating a transform between camera_link and fixed frame "map". Translations taken from model.sdf file of kinect camera, rotation is tuned by hand-->
-        <node pkg="tf2_ros" type="static_transform_publisher" name="static_tf_map_to_camera_link" args="2.095 -1.5 1.61 -0.015 -0.018 -1.83  map camera_link"/>
-        <!-- <node pkg="mobile_manipulator" type="camera_tf_from_model_state.py" name="camera_tf_from_model_state"/> -->
-        
-        <!-- <node name="camera_tf_from_model_state" pkg="mobile_manipulator" type="camera_tf_from_model_state.py"/> -->
-
-        <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="static_tf_map_to_odom_combined" args="0 0 0 0 0 0 map odom_combined"/> -->
 
         <!-- unpausing after loading to avoid object table clipping -->
         <node pkg="rosservice" type="rosservice" name="unpause_gazebo" args="call --wait /gazebo/unpause_physics" />
 
-        <!-- creating a collision box at the pose of the table -->
-        <!-- quick-fix that only works in sim obv -->
-        <!-- <node name="sim_table_collision" pkg="mobile_manipulator" type="sim_table_collision.py"/> -->
-
-        <!-- fixes the frame of the depth map, useful for pointcloud transforms -->
-        <!-- <include file="$(find rgbd_launch)/launch/kinect_frames.launch"/> -->
-        <!-- transforms pointcloud to relative 'to_frame'  -->
-        <!-- <node name="pcl_transform" pkg="mobile_manipulator" type="pcl_transform.py">
-            <param name="to_frame" type="str" value="UR10_wrist_3_link"/>
-        </node>  -->
-
-        <node pkg="mobile_manipulator" type="point_cloud_grasp.py" name="cloud_data"/>
-
-        <!-- start gpd separately instead: quicker retry if failed: -->
-        <!-- so: launch this file and 'roslaunch gpd_ros ur5.launch' -->
-        <!-- <include file="$(find gpd_ros)/launch/ur5.launch"/> -->
-        
-        <!-- regularly clear octomap -->
-        <!-- <node name="octomap_clearer" pkg="mobile_manipulator" type="octomap_clearer.py"/> -->
 </launch>

@@ -1,10 +1,8 @@
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import os
 from navigation_testing import append_df_to_excel
-
-# ee_file = pd.read_excel("benchmarking/data/DWB/new_maze/benchmarking_ee_path_new_maze.xlsx",sheet_name=1, header=0)
-# mb_file = pd.read_excel("benchmarking/data/DWB/new_maze/benchmarking_paths_new_maze.xlsx",sheet_name=1, header=0, dtype=list)
 
 def extract_position(excel_file, column_name="pose"):
     """
@@ -47,11 +45,11 @@ def calculate_error(world_name, alg, dynamic):
     """
     errors = np.zeros((9,3))
     for j in range(1,10):
-        ee_file = pd.read_excel("benchmarking/data/"+alg.upper()+"/"+world_name.lower()+"/benchmarking_ee_path_"+world_name.lower()+".xlsx",sheet_name=j, header=0)
-        mb_file = pd.read_excel("benchmarking/data/"+alg.upper()+"/"+world_name.lower()+"/benchmarking_paths_"+world_name.lower()+".xlsx",sheet_name=j, header=0, dtype=list)
+        ee_file = pd.read_excel(os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world_name.lower()+"/benchmarking_ee_path_"+world_name.lower()+".xlsx"),sheet_name=j, header=0)
+        mb_file = pd.read_excel(os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world_name.lower()+"/benchmarking_paths_"+world_name.lower()+".xlsx"),sheet_name=j, header=0, dtype=list)
         if dynamic:
-            ee_file = pd.read_excel("benchmarking/data/"+alg.upper()+"/"+world_name.lower()+"/benchmarking_ee_path_"+world_name.lower()+"_dynamic.xlsx",sheet_name=j, header=0)
-            mb_file = pd.read_excel("benchmarking/data/"+alg.upper()+"/"+world_name.lower()+"/benchmarking_paths_"+world_name.lower()+"_dynamic.xlsx",sheet_name=j, header=0, dtype=list)
+            ee_file = pd.read_excel(os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world_name.lower()+"/benchmarking_ee_path_"+world_name.lower()+"_dynamic.xlsx"),sheet_name=j, header=0)
+            mb_file = pd.read_excel(os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world_name.lower()+"/benchmarking_paths_"+world_name.lower()+"_dynamic.xlsx"),sheet_name=j, header=0, dtype=list)
 
         # Getting the position data
         travelled_path = extract_path(mb_file)
@@ -104,9 +102,9 @@ def plot_data_with_average(array, fig_title, alg, world):
     # print(data)
     fig = px.scatter_3d(data, x="x", y="y", z="z", color="datatype", title=fig_title)
     # fig.show()
-    image_path = "mobile_manipulator/src/benchmarking/images/"+alg.upper()+"/ee_path_smoothness/ee_path_smoothness_"+world+".png"
+    image_path = os.path.abspath("benchmarking/images/"+alg.upper()+"/ee_path_smoothness/ee_path_smoothness_"+world+".png")
     if dynamic:
-        image_path = "mobile_manipulator/src/benchmarking/images/"+alg.upper()+"/ee_path_smoothness/dynamic_ee_path_smoothness_"+world+".png"
+        image_path = os.path.abspath("benchmarking/images/"+alg.upper()+"/ee_path_smoothness/dynamic_ee_path_smoothness_"+world+".png")
     fig.write_image(image_path)
     return data
 
@@ -115,9 +113,9 @@ if __name__ == "__main__":
     worlds = ["new_maze", "complex_maze", "office", "old_maze", "playground", "warehouse"]
     # world_name = "new_maze"
     dynamic = False
-    file_path = "benchmarking/data/"+alg.upper()+"/ee_path_smoothness.xlsx"
+    file_path = os.path.abspath("benchmarking/data/"+alg.upper()+"/ee_path_smoothness.xlsx")
     if dynamic:
-        file_path = "benchmarking/data/"+alg.upper()+"/ee_path_smoothness_dynamic.xlsx"
+        file_path = os.path.abspath("benchmarking/data/"+alg.upper()+"/ee_path_smoothness_dynamic.xlsx")
     errors = [pd.DataFrame({}) for i in range(0,len(worlds))]
 
     for i,world in enumerate(worlds):
