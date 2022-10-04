@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+
+<launch>
+    
+    <param name="/use_sim_time" value="true"/>
+
+    <arg name="world_file"/>
+    <arg name="world_name"/>
+    <arg name="trial_arg"/>
+    <arg name="local_planner"/>
+    <arg name="dynamic" default="false"/>
+    <arg name="move_arm" default="false"/>
+
+    <!-- Currently supports DWB and TEB -->
+    <param name="local_planning_alg" value="$(arg local_planner)"/>
+    <!-- Must match the names found in the if statements in the navigation goal publishing script: "navigation_test_publisher.py-->
+    <param name="world_name_py" value="$(arg world_name)"/>
+    <param name="trial_number" value="$(arg trial_arg)"/>
+    <param name="benchmarking_done" value="false"/>
+    <param name="is_dynamic" value="$(arg dynamic)"/>
+    <param name="is_moving" value="$(arg move_arm)"/>
+    <arg name="map_file"/>
+    <arg name="initial_x"/>
+    <arg name="initial_y"/>
+    <arg name="initial_z"/>
+    <arg name="initial_yaw"/>
+    <arg name="verbose" default="false"/>
+    
+
+    <!-- startup simulated world -->
+        <include file="$(find gazebo_ros)/launch/empty_world.launch">
+            <arg name="verbose" value="$(arg verbose)"/>
+            <arg name="world_name" value="$(arg world_file)"/>
+        </include>
+
+    <!-- This group includes all the necessary parts of the robot/mobile manipulator -->
+    <group>
+        <!-- send robot urdf to param server -->
+        <param name="robot_description" command="$(find xacro)/xacro '$(find mobile_manipulator)/urdf/dora.xacro'" />
+        <!-- push robot_description to factory and spawn robot in gazebo -->
+        <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model Mobile_Manipulator -x $(arg initial_x) -y $(arg initial_y) -z $(arg initial_z) -Y $(arg initial_yaw)" respawn="false" output="screen" />
+            <!-- Load joint_state_controller -->
+        <rosparam file="$(find mobile_manipulator)/cfg/controller/joint_state_controller.yaml" command="load"/>
+        <!-- Start joint_state_controller -->
+        <node name="joint_state_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn joint_state_controller" respawn="false" output="screen"/>
+    
+        <!-- Robot state_publisher subscribes to /joint_states and calculats state of the system 
+            as transfer functions between the frames and publishes it as the State of the Robot as TF-->
+        <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+            <param name="publish_frequency" type="double" value="10.0" />
+        </node>
+
+
+        <!-- Load the controllers for UR10 -->
+        <rosparam file="$(find ur10_arm)/cfg/controller/ur10_controller.yaml" command="load"/>
+        <!-- Spawn the UR10 controllers -->
+        <node name="ur10_arm_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn ur10_arm_controller" 
+            respawn="false" output="screen" 
+        /> 
+        <!-- Load the controllers for the BH282 -->
+        <rosparam file="$(find bh282_hand)/cfg/controller/bh282_controller.yaml" command="load"/>
+        <!-- Spawn the BH282 controllers -->    
+        <node name="bh282_gripper_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn bh282_gripper_controller" 
+            respawn="false" output="screen" 
+        /> 
+
+        <!-- Load the controllers for the MiR100 -->
+        <rosparam file="$(find mir100_mobile_base)/cfg/controller/mir100_controller.yaml" command="load"/>
+
+        <!-- Spawn the MiR100 controllers --> 
+        <node name="mir100_mobile_base_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false"
+                    output="screen" ns="/" args="spawn mir100_controller">
+
+        </node>
+
+        <!-- Used to filter out points that are too far away and/or too close to the sensor -->
+        <!-- Back laser scanner -->
+        <node name="b_rep117_laser_filter" pkg="mir_navigation" type="rep117_filter.py" output="screen">
+            <remap from="scan" to="b_scan" />
+            <remap from="scan_filtered" to="b_scan_rep117" />
+        </node>
+
+        <!-- Front laser scanner -->
+        <node name="f_rep117_laser_filter" pkg="mir_navigation" type="rep117_filter.py" output="screen">
+            <remap from="scan" to="f_scan" />
+            <remap from="scan_filtered" to="f_scan_rep117" />
+        </node>
+        
+        <!-- Merge the sensor data from the front and back laser scanners -->
+        <node pkg="ira_laser_tools" name="laserscan_multi_merger" type="laserscan_multi_merger" output="screen">
+            <param name="destination_frame" value="MiR_footprint"/>
+            <param name="cloud_destination_topic" value="/merged_cloud"/>
+            <param name="scan_destination_topic" value="/scan"/>
+            <param name="laserscan_topics" value ="/f_scan /b_scan" /> <!-- LIST OF THE LASER SCAN TOPICS TO SUBSCRIBE -->
+            <param name="angle_min" value="-2.0"/>
+            <param name="angle_max" value="2.0"/>
+            <param name="angle_increment" value="0.0058"/>
+            <param name="scan_time" value="0.0333333"/>
+            <param name="range_min" value="0.30"/>
+            <param name="range_max" value="50.0"/>
+        </node>
+    </group>
+
+    <!-- This group includes all the necessary parts of the navigation of the robot/mobile manipulator -->
+    <group>
+        <!-- Starts the Adaptive Monte Carlo Localization launch file gotten from mir_navigation-->
+        <include file="$(find mir_navigation)/launch/amcl.launch">
+            <arg name="initial_pose_x" value="$(arg initial_x)"/>
+            <arg name="initial_pose_y" value="$(arg initial_y)"/>
+            <arg name="initial_pose_a" value="$(arg initial_yaw)"/>
+        </include>
+
+        <!-- Starts the path planner gotten from mir_navigation -->
+        <include file="$(find mir_navigation)/launch/start_planner.launch">
+        <!-- Passing the 2D map file as parameter for easy interchangability -->
+            <arg name="map_file" value="$(arg map_file)"/>
+            <arg name="local_planner" value="$(arg local_planner)"/>
+        </include>
+
+        <!-- Starting the Rviz window for visualisation of planning, localisation and poses -->
+        <!-- Basically everything needed for navigation should be visualised here. -->
+        <node name="navigation_rviz" pkg="rviz" type="rviz" args="-d $(find mir_navigation)/rviz/navigation.rviz"/>
+    </group>    
+    
+    <!-- Scripts used in the benchmarking -->
+    <node name="ee_path_measurements" pkg="local_planner_benchmark" type="ee_stability_metric.py" output="screen"/>
+    <node name="path_measurements" pkg="local_planner_benchmark" type="local_path_metric.py" output="screen"/>
+    <node name="nav_goal_publisher" pkg="local_planner_benchmark" type="navigation_test_publisher.py" output="screen"/>
+    <node name="benchmark_data_collector" pkg="local_planner_benchmark" type="navigation_testing.py" output="screen"/>
+    <node name="navigation_status" pkg="local_planner_benchmark" type="navigation_status.py" output="screen"/>
+        
+</launch>

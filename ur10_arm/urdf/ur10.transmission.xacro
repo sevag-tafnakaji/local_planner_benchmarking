@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+   
+    <!-- ############## Macros ################## -->
+    <!-- ######################################## -->
+
+        <xacro:macro name="UR10_joint_transmission" 
+                        params="joint 
+                                hw_interface:=hardware_interface/PositionJointInterface
+                                tm_type:=transmission_interface/SimpleTransmission">
+            <transmission name="UR10__${joint}_trans">
+                <type>${tm_type}</type>
+                <joint name="UR10__${joint}_joint">
+                    <hardwareInterface>${hw_interface}</hardwareInterface>
+                </joint>
+                <actuator name="UR10__${joint}_motor">
+                    <hardwareInterface>${hw_interface}</hardwareInterface>
+                    <mechanicalReduction>1</mechanicalReduction>
+                </actuator>
+            </transmission>
+            
+        </xacro:macro>
+   
+    <!-- ######################################## -->
+    <!-- ############## Macros ################## -->
+
+</robot>

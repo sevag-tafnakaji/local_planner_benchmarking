@@ -1,0 +1,27 @@
+
+
+<launch>
+  <arg name="model_name" default="powerdrill" />
+  <arg name="wait_for_table" default="false" />
+  <arg name="wait_for_table_name" default="table" />
+  <arg name="x" default="-1.188616" />
+  <arg name="y" default="-4.837664" />
+  <arg name="z" default="2.664218" />
+  <arg name="roll" default="0.0" />
+  <arg name="pitch" default="0.0" />
+  <arg name="yaw" default="0.0" />
+
+  <param name="powerdrill_description"
+    command="$(find xacro)/xacro '$(find mobile_manipulator)/worlds/warehouse/models/powerdrill/powerdrill.urdf.xacro'" />
+
+  <group if="$(arg wait_for_table)">
+    <node name="spawn_$(arg model_name)" pkg="gazebo_ros" type="spawn_model" args="-urdf
+      -param powerdrill_description -model $(arg model_name) -wait '$(arg wait_for_table_name)'
+      -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" respawn="false" output="screen" />
+  </group>
+  <group unless="$(arg wait_for_table)">
+    <node name="spawn_$(arg model_name)" pkg="gazebo_ros" type="spawn_model" args="-urdf
+      -param powerdrill_description -model $(arg model_name)
+      -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)" respawn="false" output="screen" />
+  </group>
+</launch>

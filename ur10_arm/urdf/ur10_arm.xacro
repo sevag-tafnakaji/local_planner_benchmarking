@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="ur10_arm">
+
+    <xacro:include filename="$(find ur10_arm)/urdf/common.urdf.xacro" />
+    <xacro:include filename="$(find ur10_arm)/urdf/ur10.urdf.xacro" />
+    <xacro:include filename="$(find ur10_arm)/urdf/ur10.transmission.xacro" />
+    <xacro:include filename="$(find ur10_arm)/urdf/ur10.gazebo.xacro" />
+
+
+    <link name="world"/>
+
+    <!-- #################### UR10 Arm ################### -->
+    <!-- ################################################# -->
+
+        <!-- #################### URDF ################### -->
+            
+            <xacro:UR10_arm parent="world">
+	        </xacro:UR10_arm>
+
+        <!-- #################### URDF ################### -->
+
+        <!-- ############## Transmissions ################ -->
+        
+            <!-- 
+                hw_interface:="hardware_interface/PositionJointInterface"
+                hw_interface:="hardware_interface/EffortJointInterface" 
+            -->
+            <xacro:UR10_joint_transmission joint="base_to_shoulder_pan" hw_interface="hardware_interface/PositionJointInterface"/>
+            <xacro:UR10_joint_transmission joint="shoulder_pan_to_upper_arm" hw_interface="hardware_interface/PositionJointInterface"/>
+            <xacro:UR10_joint_transmission joint="upper_arm_to_fore_arm" hw_interface="hardware_interface/PositionJointInterface"/>
+            <xacro:UR10_joint_transmission joint="fore_arm_to_wrist_1" hw_interface="hardware_interface/PositionJointInterface"/>
+            <xacro:UR10_joint_transmission joint="wrist_1_to_wrist_2" hw_interface="hardware_interface/PositionJointInterface"/>
+            <xacro:UR10_joint_transmission joint="wrist_2_to_wrist_3" hw_interface="hardware_interface/PositionJointInterface"/>
+            
+        <!-- ############## Transmissions ################ -->
+
+
+        <!-- ############## Gazebo ####################### -->
+
+            <xacro:UR10_gazebo/>
+
+            <xacro:UR10_ros_controller/>
+         
+        <!-- ############## Gazebo ####################### -->
+
+
+    <!-- ################################################# -->
+    <!-- #################### UR10 Arm ################### -->
+
+</robot>

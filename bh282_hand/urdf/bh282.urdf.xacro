@@ -1,0 +1,332 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+
+    <!-- ################# Properties ################ -->
+    <!-- ############################################# -->
+
+        <xacro:property name="BH282_joint_damping" value="0.7" />
+        <xacro:property name="BH282_joint_friction" value="0.0" />
+        <xacro:property name="BH282_joint_effort_limit" value="30.0" />
+        <xacro:property name="BH282_joint_velocity_limit" value="2.0" />
+        <xacro:property name="BH282_mechanical_reduction" value="1.0" />
+        <xacro:property name="BH282_friction_coefficient" value="100.0" />
+
+    <!-- ############################################# -->
+    <!-- ################# Properties ################ -->
+
+    <!-- #################### Macros ################### -->
+    <!-- #################################################### -->
+
+        <xacro:macro name="BH282_hand" params="parent">
+            
+            <joint name="BH282_base_joint_fixed" type="fixed">
+                <!-- To Attach the Gripper to the Arm -->
+                <!-- Change This if you would like to run the gripper stand-alone -->
+                <origin xyz="0 0 0" rpy="0 ${0.5 * pi} 0" />
+                <!-- <origin xyz="0 0 0" rpy="0 0 0" /> -->
+                <parent link="${parent}"/>
+                <child link="BH282_base_link"/>
+            </joint>  
+
+            <link name="BH282_base_link">
+                <inertial>
+                    <mass value="1.0" />
+                    <origin xyz="0 0 0" />
+                    <inertia  ixx="1.0" ixy="0.0"  ixz="0.0"  iyy="1.0"  iyz="0.0"  izz="1.0" />
+                </inertial>
+                <visual>
+                    <origin xyz="0 0 0" rpy="0 0 0" />
+                    <geometry>
+                        <mesh filename="package://bh282_hand/mesh/palm_282.dae"/>
+                    </geometry>
+                    <color rgba="0.75 0.75 0.75 1.0"/>
+                </visual>
+                <collision>
+                    <origin xyz="0 0 0" rpy="0 0 0 " />
+                    <geometry>
+                        <mesh filename="package://bh282_hand/mesh/palm_282.dae"/>
+                    </geometry>
+                    <contact_coefficients kd="1.0" kp="1000.0" mu="${BH282_friction_coefficient}"/>
+                </collision>     
+            </link>
+
+            <!-- Finger 1-->
+
+                <link name="BH282_finger_11_link">
+                    <inertial>
+                        <mass value="0.1"/>
+                        <origin xyz="-0.046 0 0" rpy="0 0 0"/>
+                        <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+                    </inertial>
+                    <visual>
+                        <origin xyz="0 0 0" rpy="0 0 0" />
+                        <geometry>
+                            <mesh filename="package://bh282_hand/mesh/knuckle.dae" />
+                        </geometry>
+                    </visual>
+                    <collision>
+                        <origin xyz="0 0 0" rpy="0 0 0" />
+                        <geometry>
+                        <mesh filename="package://bh282_hand/mesh/knuckle.dae" />
+                        </geometry>
+                    </collision>
+                </link>
+
+                <joint name="BH282__base_to_finger_11_joint" type="revolute">
+                    <parent link="BH282_base_link"/>
+                    <child link="BH282_finger_11_link"/>
+                    <origin xyz="-0.025 0 0.0252" rpy="0 0 1.5708" />
+                    <axis xyz="0 0 -1"/>
+                    <limit effort="${BH282_joint_effort_limit}" lower="0" upper="${pi}" velocity="${BH282_joint_velocity_limit}"/>
+                    <dynamics damping="${BH282_joint_damping}" friction="${BH282_joint_friction}"/>
+                </joint>
+
+                <link name="BH282_finger_12_link">
+                    <inertial>
+                        <mass value="0.1"/>
+                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+                    </inertial>
+                    <visual>
+                        <origin xyz="0 0 0" rpy="0 0 0" />
+                        <geometry>
+                            <mesh filename="package://bh282_hand/mesh/finger.dae" />
+                        </geometry>
+                    </visual>		
+                    <collision>
+                        <origin xyz="0 0 0" rpy="0 0 0" />
+                        <geometry>
+                            <mesh filename="package://bh282_hand/mesh/finger.dae" />
+                        </geometry>
+                        <contact_coefficients kd="1.0" kp="1000.0" mu="0"/>
+                    </collision>
+                </link>
+
+                <joint name="BH282__finger_11_to_finger_12_joint" type="revolute">
+                    <parent link="BH282_finger_11_link"/>
+                    <child link="BH282_finger_12_link"/>
+                    <origin	xyz="-0.05 0 0.0339"
+                        rpy="${0.5 * pi} 0 0" />
+                    <axis xyz="0 0 -1"/>
+                    <limit effort="${BH282_joint_effort_limit}" lower="0.0" upper="2.44" velocity="${BH282_joint_velocity_limit}"/>
+                    <dynamics damping="${BH282_joint_damping}" friction="${BH282_joint_friction}"/>
+                </joint>
+
+                <link name="BH282_finger_13_link">
+                    <inertial>
+                        <mass value="0.1"/>
+                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+                    </inertial>
+                    <visual>
+                        <origin xyz="0 0 0" rpy="0 0 0" />
+                        <geometry>
+                            <mesh filename="package://bh282_hand/mesh/finger_tip.dae" />
+                        </geometry>
+                    </visual>		
+                    <collision>
+                        <origin xyz="0 0 0" rpy="0 0 0" />
+                        <geometry>
+                            <mesh filename="package://bh282_hand/mesh/finger_tip.dae" />
+                        </geometry>
+                        <contact_coefficients kd="1.0" kp="1000.0" mu="0"/>
+                    </collision>
+                </link>
+            
+                <joint name="BH282__finger_12_to_finger_13_joint" type="revolute">
+                    <parent link="BH282_finger_12_link"/>
+                    <child link="BH282_finger_13_link"/>
+                    <origin xyz="-0.069936 0.003 0" rpy="0 0 0" />
+                    <axis xyz="0 0 -1"/>
+                    <limit effort="${BH282_joint_effort_limit}" lower="0.0" upper="0.84" velocity="${BH282_joint_velocity_limit}"/>
+                    <dynamics damping="${BH282_joint_damping}" friction="${BH282_joint_friction}"/>
+                </joint>
+
+            <!-- Finger 2-->
+
+                <link name="BH282_finger_21_link">
+                    <inertial>
+                        <mass value="0.1"/>
+                        <origin xyz="-0.046 0 0" rpy="0 0 0"/>
+                        <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+                    </inertial>
+                    <visual>
+                        <origin xyz="0 0 0" rpy="0 0 0" />
+                        <geometry>
+                            <mesh filename="package://bh282_hand/mesh/knuckle.dae" />
+                        </geometry>
+                    </visual>
+                    <collision>
+                        <origin xyz="0 0 0" rpy="0 0 0" />
+                        <geometry>
+                            <mesh filename="package://bh282_hand/mesh/knuckle.dae" />
+                        </geometry>
+                    </collision>
+                </link>
+
+                <joint name="BH282__base_to_finger_21_joint" type="revolute">
+                    <parent link="BH282_base_link"/>
+                    <child link="BH282_finger_21_link"/>
+                    <origin xyz="0.025 0 0.0252" rpy="0 0 ${0.5 * pi}" />
+                    <axis xyz="0 0 1"/>
+                    <limit effort="${BH282_joint_effort_limit}" lower="0" upper="${pi}" velocity="${BH282_joint_velocity_limit}"/>
+                    <dynamics damping="${BH282_joint_damping}" friction="${BH282_joint_friction}"/>
+                </joint>
+
+                <link name="BH282_finger_22_link">
+                        <inertial>
+                            <mass value="0.1"/>
+                            <origin xyz="0 0 0" rpy="0 0 0"/>
+                            <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+                        </inertial>
+                        <visual>
+                            <origin xyz="0 0 0" rpy="0 0 0" />
+                            <geometry>
+                                <mesh filename="package://bh282_hand/mesh/finger.dae" />
+                            </geometry>
+                        </visual>		
+                        <collision>
+                            <origin xyz="0 0 0" rpy="0 0 0" />
+                            <geometry>
+                                <mesh filename="package://bh282_hand/mesh/finger.dae" />
+                            </geometry>
+                            <contact_coefficients kd="1.0" kp="1000.0" mu="0"/>
+                        </collision>
+                </link>
+
+                <joint name="BH282__finger_21_to_finger_22_joint" type="revolute">
+                    <parent link="BH282_finger_21_link"/>
+                    <child link="BH282_finger_22_link"/>
+                    <origin	xyz="-0.05 0 0.0339" rpy="${0.5 * pi} -8.8281E-17 0" />
+                    <axis xyz="0 0 -1"/>
+                    <limit effort="${BH282_joint_effort_limit}" lower="0.0" upper="2.44" velocity="${BH282_joint_velocity_limit}"/>
+                    <dynamics damping="${BH282_joint_damping}" friction="${BH282_joint_friction}"/>
+                </joint>
+
+                <link name="BH282_finger_23_link">
+                    <inertial>
+                        <mass value="0.1"/>
+                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+                    </inertial>
+                    <visual>
+                        <origin xyz="0 0 0" rpy="0 0 0" />
+                        <geometry>
+                            <mesh filename="package://bh282_hand/mesh/finger_tip.dae" />
+                        </geometry>
+                    </visual>		
+                    <collision>
+                        <origin xyz="0 0 0" rpy="0 0 0" />
+                        <geometry>
+                            <mesh filename="package://bh282_hand/mesh/finger_tip.dae" />
+                        </geometry>
+                        <contact_coefficients kd="1.0" kp="1000.0" mu="0"/>
+                    </collision>
+                </link>
+
+                <joint name="BH282__finger_22_to_finger_23_joint" type="revolute">
+                    <parent link="BH282_finger_22_link"/>
+                    <child link="BH282_finger_23_link"/>
+                    <origin xyz="-0.069936 0.003 0" rpy="0 0 0" />
+                    <axis xyz="0 0 -1"/>
+                    <limit effort="${BH282_joint_effort_limit}" lower="0.0" upper="0.84" velocity="${BH282_joint_velocity_limit}"/>
+                    <dynamics damping="${BH282_joint_damping}" friction="${BH282_joint_friction}"/>
+                </joint>
+
+            <!-- Finger 3-->
+
+                <link name="BH282_finger_31_link">
+                    <inertial>
+                        <mass value="0.1"/>
+                        <origin xyz="-0.046 0 0" rpy="0 0 0"/>
+                        <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+                    </inertial>
+                    <visual>
+                        <origin xyz="-0.04 0 0" rpy="0 0 0" />
+                        <geometry>
+                        <mesh filename="package://bh282_hand/mesh/knuckle_fixed.dae" />
+                        </geometry>
+                    </visual>		
+                    <collision>
+                        <origin xyz="-0.04 0 0" rpy="0 0 0" />
+                        <geometry>
+                        <mesh filename="package://bh282_hand/mesh/knuckle_fixed.dae" />
+                        </geometry>
+                        <contact_coefficients kd="1.0" kp="1000.0" mu="0"/>
+                    </collision>
+                </link>
+
+                <joint name="BH282__base_to_finger_31_joint_fixed" type="fixed">
+                    <parent link="BH282_base_link"/>
+                    <child link="BH282_finger_31_link"/>
+                    <origin xyz="0 0 0.0252" rpy="0 0 ${-0.5 * pi}"/>
+                </joint>
+
+                <link name="BH282_finger_32_link">
+                    <inertial>
+                        <mass value="0.1"/>
+                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+                    </inertial>
+                    <visual>
+                        <origin xyz="0 0 0" rpy="0 0 0" />
+                        <geometry>
+                            <mesh filename="package://bh282_hand/mesh/finger.dae" />
+                        </geometry>
+                    </visual>		
+                    <collision>
+                        <origin xyz="0 0 0" rpy="0 0 0" />
+                        <geometry>
+                            <mesh filename="package://bh282_hand/mesh/finger.dae" />
+                        </geometry>
+                        <contact_coefficients kd="1.0" kp="1000.0" mu="0"/>
+                    </collision>
+                </link>
+
+                <joint name="BH282__finger_31_to_finger_32_joint" type="revolute">
+                    <parent link="BH282_finger_31_link"/>
+                    <child link="BH282_finger_32_link"/>
+                    <origin	xyz="-0.05 0 0.0339" rpy="${0.5 * pi} -8.8281E-17 0" />
+                    <axis xyz="0 0 -1"/>
+                    <limit effort="${BH282_joint_effort_limit}" lower="0.0" upper="2.44" velocity="${BH282_joint_velocity_limit}"/>
+                    <dynamics damping="${BH282_joint_damping}" friction="${BH282_joint_friction}"/>
+                </joint>
+
+                <link name="BH282_finger_33_link">
+                    <inertial>
+                        <mass value="0.1"/>
+                        <origin xyz="0 0 0" rpy="0 0 0"/>
+                        <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01" />
+                    </inertial>
+                    <visual>
+                        <origin xyz="0 0 0" rpy="0 0 0" />
+                        <geometry>
+                            <mesh filename="package://bh282_hand/mesh/finger_tip.dae" />
+                        </geometry>
+                    </visual>		
+                    <collision>
+                    <origin xyz="0 0 0" rpy="0 0 0" />
+                    <geometry>
+                        <mesh filename="package://bh282_hand/mesh/finger_tip.dae" />
+                    </geometry>
+                    <contact_coefficients kd="1.0" kp="1000.0" mu="0"/>
+                    </collision>
+                </link>
+
+                <joint name="BH282__finger_32_to_finger_33_joint" type="revolute">
+                    <parent link="BH282_finger_32_link"/>
+                    <child link="BH282_finger_33_link"/>
+                    <origin xyz="-0.069936 0.003 0" rpy="0 0 0" />
+                    <axis xyz="0 0 -1"/>
+                    <limit effort="${BH282_joint_effort_limit}" lower="0.0" upper="0.84" velocity="${BH282_joint_velocity_limit}"/>
+                    <dynamics damping="${BH282_joint_damping}" friction="${BH282_joint_friction}"/>
+                </joint>
+
+
+        </xacro:macro>
+ 
+    <!-- #################################################### -->
+    <!-- #################### Macros ################### -->
+
+</robot>

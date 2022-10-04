@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<launch>
+    
+    <arg name="world_file" value="$(find local_planner_benchmark)/worlds/mazes/new_maze/maze.world"/>
+    <arg name="world_name" value="new_maze"/>
+    <arg name="map_file" value="$(find mir_navigation)/map/maze.yaml"/>
+    <arg name="dynamic" default="false"/>
+    <arg name="move_arm" default="false"/>
+    <arg name="initial_x" value="-9.871719"/>
+    <arg name="initial_y" value="4.706197"/>
+    <arg name="initial_z" value="0.0"/>
+    <arg name="initial_yaw" value="-1.57"/>
+    <arg name="verbose" value="false"/>
+    <arg name="trial_arg" default="1"/>
+    <arg name="local_planner" default="dwb"/>
+
+    <include file="$(find local_planner_benchmark)/launch/common_benchmarking.launch" pass_all_args="true">
+        <param name="world_name_py" value="$(arg world_name)"/>
+    </include>
+</launch>

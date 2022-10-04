@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+    
+    <!-- ############## Macros ################## -->
+    <!-- ######################################## -->
+
+    <xacro:macro name="BH282_gazebo">
+
+        <gazebo reference="BH282_base_link">
+            <material>Gazebo/White</material>
+            <turnGravityOff>false</turnGravityOff>
+            <selfCollide>true</selfCollide>
+        </gazebo>
+
+        <!-- Finger 1-->
+
+            <gazebo reference="BH282_finger_11_link">
+                <material>Gazebo/White</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+            <gazebo reference="BH282_finger_12_link">
+                <material>Gazebo/White</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+            <gazebo reference="BH282_finger_13_link">
+                <material>Gazebo/White</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+        
+        <!-- Finger 2-->
+
+            <gazebo reference="BH282_finger_21_link">
+                <material>Gazebo/White</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+            <gazebo reference="BH282_finger_22_link">
+                <material>Gazebo/White</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+            <gazebo reference="BH282_finger_23_link">
+                <material>Gazebo/White</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+        <!-- Finger 2-->
+
+            <gazebo reference="BH282_finger_31_link">
+                <material>Gazebo/White</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+            <gazebo reference="BH282_finger_32_link">
+                <material>Gazebo/White</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo> 
+
+            <gazebo reference="BH282_finger_33_link">
+                <material>Gazebo/White</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+    </xacro:macro>
+
+    <xacro:macro name="BH282_ros_controller">
+		<gazebo>
+			<plugin name="ros_control" filename="libgazebo_ros_control.so">
+			   <robotNamespace>/</robotNamespace>
+			   <controlPeriod>0.001</controlPeriod>
+			   <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+			</plugin>
+		</gazebo>
+    </xacro:macro>
+
+    <!-- ######################################## -->
+    <!-- ############## Macros ################## -->
+
+
+
+
+
+</robot>

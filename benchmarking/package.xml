@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>local_planner_benchmark</name>
+  <version>0.0.0</version>
+  <description>The package for benchmarking</description>
+
+  <maintainer email="sevag.tafnakaji@gmail.com">Sevag Tafnakaji</maintainer>
+
+
+  <license>BSD</license>
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>bh282_hand</build_depend>
+  <build_depend>mir100_mobile_base</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>ur10_arm</build_depend>
+  <build_depend>octomap</build_depend>
+  <build_depend>message_generation</build_depend>
+  
+
+  <depend>gazebo_ros</depend> 
+  <build_export_depend>bh282_hand</build_export_depend>
+  <build_export_depend>mir100_mobile_base</build_export_depend>
+  <build_export_depend>roscpp</build_export_depend>
+  <build_export_depend>ur10_arm</build_export_depend>
+  <exec_depend>bh282_hand</exec_depend>
+  <exec_depend>mir100_mobile_base</exec_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>ur10_arm</exec_depend>
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+
+  </export>
+</package>

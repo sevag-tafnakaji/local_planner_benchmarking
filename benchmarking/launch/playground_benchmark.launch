@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+
+<launch>
+    
+    <arg name="world_file" value="$(find local_planner_benchmark)/worlds/playground/playground.world"/>
+    <arg name="world_name" value="playground"/>
+    <arg name="map_file" value="$(find mir_navigation)/map/playground.yaml"/>
+    <arg name="dynamic" default="false"/>
+    <arg name="move_arm" default="false"/>
+    <arg name="initial_x" value="-8.937530"/>
+    <arg name="initial_y" value="-3.931000"/>
+    <arg name="initial_z" value="0.5"/>
+    <arg name="initial_yaw" value="1.57"/>
+    <arg name="verbose" value="false"/>
+    <arg name="trial_arg" default="1"/>
+    <arg name="local_planner" default="dwb"/>
+
+    <group if="$(arg dynamic)">
+        <node name="spawn_table_1" pkg="gazebo_ros" type="spawn_model" args="-sdf -file
+         $(find local_planner_benchmark)/worlds/warehouse/models/aws_robomaker_warehouse_DeskC_01/model.sdf
+          -model table_1 -x 6.151855 -y -3.894379"/>
+        <node name="spawn_table_2" pkg="gazebo_ros" type="spawn_model" args="-sdf -file
+         $(find local_planner_benchmark)/worlds/warehouse/models/aws_robomaker_warehouse_DeskC_01/model.sdf
+          -model table_2 -x 8.247869 -y 1.704232"/>
+        <node name="spawn_shelf" pkg="gazebo_ros" type="spawn_model" args="-sdf -file
+         $(find local_planner_benchmark)/worlds/warehouse/models/aws_robomaker_warehouse_ShelfD_01/model.sdf
+          -model shelf -x 4.942412 -y -0.874986"/>
+        <node name="spawn_boxes_1" pkg="gazebo_ros" type="spawn_model" args="-sdf -file
+         $(find local_planner_benchmark)/worlds/warehouse/models/aws_robomaker_warehouse_ClutteringA_01/model.sdf
+          -model boxes_1 -x -8.615789 -y 0.490505"/>
+        <node name="spawn_boxes_2" pkg="gazebo_ros" type="spawn_model" args="-sdf -file
+         $(find local_planner_benchmark)/worlds/warehouse/models/aws_robomaker_warehouse_ClutteringA_01/model.sdf
+          -model boxes_2 -x 10.597217 -y 3.658887"/>
+        <node name="spawn_boxes_3" pkg="gazebo_ros" type="spawn_model" args="-sdf -file
+         $(find local_planner_benchmark)/worlds/warehouse/models/aws_robomaker_warehouse_ClutteringD_01/model.sdf
+          -model boxes_3 -x -7.299022 -y 3.986575"/>
+        <node name="spawn_worker_1" pkg="gazebo_ros" type="spawn_model" args="-sdf -file
+         $(find local_planner_benchmark)/models/casual_female/model.sdf -model worker_1 
+         -x 4.094550 -y -1.983278 -Y -3.14159"/>
+        <node name="spawn_worker_2" pkg="gazebo_ros" type="spawn_model" args="-sdf -file
+         $(find local_planner_benchmark)/models/casual_female/model.sdf -model worker_2 
+         -x 6.139090 -y -2.033293 -Y -3.14159"/>
+        <node name="spawn_worker_3" pkg="gazebo_ros" type="spawn_model" args="-sdf -file
+         $(find local_planner_benchmark)/models/elegant_female2/model.sdf -model worker_3 
+         -x 7.441409 -y 2.159698"/>
+        <node name="spawn_palletjack" pkg="gazebo_ros" type="spawn_model" args="-sdf -file
+         $(find local_planner_benchmark)/worlds/warehouse/models/aws_robomaker_warehouse_PalletJackB_01/model.sdf
+          -model palletjack -x 10.888213 -y -4.345584"/>
+          
+        <!-- <node name="spawn_worker" pkg="gazebo_ros" type="spawn_model" args="-sdf -file 
+        $(find local_planner_benchmark)/models/elegant_female2/model.sdf -model worker
+         -x -2.221032 -y 0.340391"/>
+        <node name="spawn_worker2" pkg="gazebo_ros" type="spawn_model" args="-sdf -file
+         $(find local_planner_benchmark)/models/elegant_female2/model.sdf -model worker_2 
+         -x 0.555521 -y 0.99543"/>
+        <node name="spawn_worker3" pkg="gazebo_ros" type="spawn_model" args="-sdf -file
+         $(find local_planner_benchmark)/models/elegant_female2/model.sdf -model worker_3
+         -x 3.747306 -y 2.813634"/>
+         <node name="spawn_beer" pkg="gazebo_ros" type="spawn_model" args="-sdf -file 
+        $(find local_planner_benchmark)/models/beer/model.sdf -model beer
+         -x -0.9111032 -y 0.7030391"/>
+        <node name="spawn_beer2" pkg="gazebo_ros" type="spawn_model" args="-sdf -file
+         $(find local_planner_benchmark)/models/beer/model.sdf -model beer_2 
+         -x 3.555521 -y 3.29543"/> -->
+    </group>
+
+    <include file="$(find local_planner_benchmark)/launch/common_benchmarking.launch" pass_all_args="true">
+        <param name="world_name_py" value="$(arg world_name)"/>
+    </include>
+</launch>

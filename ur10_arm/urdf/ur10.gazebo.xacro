@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+    
+    <!-- ############## Macros ################## -->
+    <!-- ######################################## -->
+
+        <xacro:macro name="UR10_gazebo">
+
+            <gazebo reference="UR10_shoulder_pan_link">
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+            <gazebo reference="UR10_upper_arm_link">
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+            <gazebo reference="UR10_fore_arm_link">
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+            <gazebo reference="UR10_wrist_1_link">
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+            <gazebo reference="UR10_wrist_2_link">
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+            <gazebo reference="UR10_wrist_3_link">
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+        </xacro:macro>
+
+        <xacro:macro name="UR10_ros_controller">
+            <gazebo>
+                <plugin name="ros_control" filename="libgazebo_ros_control.so">
+                <robotNamespace>/</robotNamespace>
+                <controlPeriod>0.001</controlPeriod>
+                <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+                </plugin>
+            </gazebo>
+        </xacro:macro>
+
+    <!-- ######################################## -->
+    <!-- ############## Macros ################## -->
+
+
+
+
+
+</robot>

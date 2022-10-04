@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+   
+    <!-- ############## Macros ################## -->
+    <!-- ######################################## -->
+
+        <xacro:macro name="BH282_joint_transmission" 
+                        params="joint 
+                                hw_interface:=hardware_interface/PositionJointInterface
+                                tm_type:=transmission_interface/SimpleTransmission">
+
+            <transmission name="BH282__${joint}_trans">
+                <type>${tm_type}</type>
+                <joint name="BH282__${joint}_joint">
+                    <hardwareInterface>${hw_interface}</hardwareInterface>
+                </joint>
+                <actuator name="BH282__${joint}_motor">
+                    <hardwareInterface>${hw_interface}</hardwareInterface>
+                    <mechanicalReduction>1</mechanicalReduction>
+                    <motorTorqueConstant>1</motorTorqueConstant>
+                </actuator>
+            </transmission>
+
+        </xacro:macro>
+   
+    <!-- ######################################## -->
+    <!-- ############## Macros ################## -->
+
+</robot>
+

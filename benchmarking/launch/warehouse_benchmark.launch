@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<launch>
+
+    <arg name="world_file" value="$(find local_planner_benchmark)/worlds/warehouse/no_roof_small_warehouse.world"/>
+    <arg name="world_name" value="warehouse"/>
+    <arg name="map_file" value="$(find mir_navigation)/map/warehouse_map.yaml"/>
+    <arg name="dynamic" default="false"/>
+    <arg name="move_arm" default="false"/>
+    <arg name="initial_x" value="1.157362"/>
+    <arg name="initial_y" value="7.082126"/>
+    <arg name="initial_z" value="0.030888"/>
+    <arg name="initial_yaw" value="-1.5707963"/>
+    <arg name="verbose" value="false"/>
+    <arg name="trial_arg" default="1"/>
+    <arg name="local_planner" default="dwb"/>
+
+    <group if="$(arg dynamic)">
+        <!-- <node name="spawn_boxes" pkg="gazebo_ros" type="spawn_model" args="-sdf -file 
+            $(find local_planner_benchmark)/worlds/warehouse/models/aws_robomaker_warehouse_Bucket_01/model.sdf 
+            -model boxes -x -1.554685 -y 0.105272 -z -0.017477 -Y -1.583185" respawn="false" output="screen"/> -->
+        <node name="spawn_whiteboard" pkg="gazebo_ros" type="spawn_model" args="-sdf -file
+         $(find local_planner_benchmark)/models/whiteboard/model.sdf -model whiteboard
+          -x -1.372964 -y 0.707196"/>
+        <node name="spawn_table" pkg="gazebo_ros" type="spawn_model" args="-sdf -file
+         $(find local_planner_benchmark)/models/table/model.sdf -model table
+          -x -1.449906 -y -0.306599"/>
+        <node name="spawn_chair" pkg="gazebo_ros" type="spawn_model" args="-sdf -file
+         $(find local_planner_benchmark)/models/office_chair/model.sdf -model chair
+          -x -1.433969 -y -1.315503 -Y -3.14159"/>
+    </group>        
+
+    <include file="$(find local_planner_benchmark)/launch/common_benchmarking.launch" pass_all_args="true">
+        <param name="world_name_py" value="$(arg world_name)"/>
+    </include>
+
+</launch>

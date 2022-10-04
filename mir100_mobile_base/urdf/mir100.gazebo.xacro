@@ -1,0 +1,214 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+    
+    <!-- ############## Macros ################## -->
+    <!-- ######################################## -->
+        
+        <xacro:macro name="MiR100_gazebo">
+
+            <gazebo reference="MiR_right_wheel_link">
+                <material>Gazebo/DarkGrey</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+            <gazebo reference="MiR_left_wheel_link">
+                <material>Gazebo/DarkGrey</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+            <gazebo reference="MiR_fl_caster_rotation_link">
+                <material>Gazebo/Grey</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+            <gazebo reference="MiR_fr_caster_rotation_link">
+                <material>Gazebo/Grey</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+            <gazebo reference="MiR_bl_caster_rotation_link">
+                <material>Gazebo/Grey</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+            <gazebo reference="MiR_br_caster_rotation_link">
+                <material>Gazebo/Grey</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+            <gazebo reference="MiR_front_laser_link">
+                <material>Gazebo/FlatBlack</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+                    <sensor type="ray" name="MiR__front_lase_link">
+                        <pose>0 0 0 0 0 0</pose>
+                        <visualize>false</visualize>
+                        <update_rate>12.5</update_rate>
+                        <ray>
+                        <scan>
+                            <horizontal>
+                            <samples>541</samples>
+                            <resolution>1</resolution>  <!-- has to be 1; actual resolution will be computed from number of samples + min_angle/max_angle -->
+                            <min_angle>-2.35619449615</min_angle>
+                            <max_angle>2.35619449615</max_angle>
+                            </horizontal>
+                        </scan>
+                        <range>
+                            <min>0.05</min>
+                            <max>29.0</max>
+                            <resolution>0.01</resolution>
+                        </range>
+                        <noise>
+                            <type>gaussian</type>
+                            <!-- Noise parameters based on published spec for S300 achieving
+                                "+-29mm" accuracy at range < 3m (~0.01 of the range) at
+                                1 sigma. -->
+                            <mean>0.0</mean>
+                            <stddev>0.01</stddev>
+                        </noise>
+                        </ray>
+                        <plugin name="gazebo_ros_MiR__front_lase_link_controller" filename="libgazebo_ros_laser.so">
+                        <frameName>MiR_front_laser_link</frameName>
+                        <topicName>/f_scan</topicName>
+                        </plugin>
+                    </sensor>
+            </gazebo>
+
+            <gazebo reference="MiR_back_laser_link">
+                <material>Gazebo/FlatBlack</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+                <sensor type="ray" name="MiR__back_lase_link">
+                    <pose>0 0 0 0 0 0</pose>
+                    <visualize>false</visualize>
+                    <update_rate>12.5</update_rate>
+                    <ray>
+                    <scan>
+                        <horizontal>
+                        <samples>541</samples>
+                        <resolution>1</resolution>  <!-- has to be 1; actual resolution will be computed from number of samples + min_angle/max_angle -->
+                        <min_angle>-2.35619449615</min_angle>
+                        <max_angle>2.35619449615</max_angle>
+                        </horizontal>
+                    </scan>
+                    <range>
+                        <min>0.05</min>
+                        <max>29.0</max>
+                        <resolution>0.01</resolution>
+                    </range>
+                    <noise>
+                        <type>gaussian</type>
+                        <!-- Noise parameters based on published spec for S300 achieving
+                            "+-29mm" accuracy at range < 3m (~0.01 of the range) at
+                            1 sigma. -->
+                        <mean>0.0</mean>
+                        <stddev>0.01</stddev>
+                    </noise>
+                    </ray>
+                    <plugin name="gazebo_ros_MiR__back_lase_link_controller" filename="libgazebo_ros_laser.so">
+                    <frameName>MiR_back_laser_link</frameName>
+                    <topicName>/b_scan</topicName>
+                    </plugin>
+                </sensor>
+            </gazebo>
+
+            <gazebo reference="MiR_base_link">
+                <material>Gazebo/Grey</material>
+                <turnGravityOff>false</turnGravityOff>
+                <selfCollide>true</selfCollide>
+            </gazebo>
+
+        </xacro:macro>
+
+        <xacro:macro name="MiR_controller_plugin_gazebo" params="left_wheel_joint right_wheel_joint wheel_separation wheel_radius">
+            <gazebo>
+                <plugin name="diff_drive_controller" filename="libgazebo_ros_diff_drive.so">
+                    <legacyMode>false</legacyMode>
+                    <alwaysOn>true</alwaysOn>
+                    <updateRate>1000.0</updateRate>
+                    <leftJoint>${left_wheel_joint}</leftJoint>
+                    <rightJoint>${right_wheel_joint}</rightJoint>
+                    <wheelSeparation>${wheel_separation}</wheelSeparation>
+                    <wheelDiameter>${2*wheel_radius}</wheelDiameter>
+                    <wheelTorque>10</wheelTorque>
+                    <publishTf>false</publishTf>
+                    <odometryFrame>odom_frame</odometryFrame>
+                    <commandTopic>MiR/controller/cmd_vel</commandTopic>
+                    <odometryTopic>odom_topic</odometryTopic>
+                    <robotBaseFrame>MiR_footprint</robotBaseFrame>
+                    <wheelAcceleration>2.8</wheelAcceleration>
+                    <publishWheelJointState>true</publishWheelJointState>
+                    <publishWheelTF>false</publishWheelTF>
+                    <odometrySource>world</odometrySource>
+                    <rosDebugLevel>Debug</rosDebugLevel>
+                </plugin>
+            </gazebo>
+        </xacro:macro>
+
+        <xacro:macro name="set_wheel_friction" params="link friction">
+            <gazebo reference="${link}">
+                <mu1 value="${friction}"/>
+                <mu2 value="${friction}"/>
+                <kp value="10000000.0"/>
+                <kd value="1.0"/>
+                <minDepth>0.01</minDepth>
+            </gazebo>
+        </xacro:macro>
+
+        <xacro:macro name="p3d_base_controller">
+            <gazebo>
+                <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+                <alwaysOn>true</alwaysOn>
+                <updateRate>20.0</updateRate>
+                <bodyName>MiR_base_link</bodyName>
+                <topicName>odom_topic</topicName>
+                <gaussianNoise>0.01</gaussianNoise>
+                <frameName>MiR_footprint</frameName>
+                <xyzOffsets>0 0 0</xyzOffsets>
+                <rpyOffsets>0 0 0</rpyOffsets>
+                </plugin>
+            </gazebo>
+        </xacro:macro>
+
+        <xacro:macro name="MiR100_ros_controller">
+            <gazebo>
+                <plugin name="ros_control" filename="libgazebo_ros_control.so">
+                <robotNamespace>/</robotNamespace>
+                <controlPeriod>0.001</controlPeriod>
+                <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+                </plugin>
+            </gazebo>
+        </xacro:macro>
+
+
+
+        <!-- These are to publish the state of the unactuated 
+            joints, the caster wheels. -->
+            <gazebo>
+                <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
+                    <robotNamespace>/</robotNamespace>
+                    <jointName> MiR__base_fl_caster_rotation_joint, MiR__base_fl_caster_wheel_joint,
+                                MiR__base_fr_caster_rotation_joint, MiR__base_fr_caster_wheel_joint,
+                                MiR__base_bl_caster_rotation_joint, MiR__base_bl_caster_wheel_joint,
+                                MiR__base_br_caster_rotation_joint, MiR__base_br_caster_wheel_joint</jointName>
+                    <updateRate>20.0</updateRate>
+                    <alwaysOn>true</alwaysOn>
+                </plugin>
+            </gazebo> 
+       
+
+    <!-- ######################################## -->
+    <!-- ############## Macros ################## -->
+
+
+
+
+
+</robot>

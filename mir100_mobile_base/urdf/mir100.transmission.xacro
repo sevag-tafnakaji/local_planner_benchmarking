@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+   
+    <!-- ############## Macros ################## -->
+    <!-- ######################################## -->
+
+        <xacro:macro name="MiR_wheel_transmission" 
+                        params="locationprefix 
+                                hw_interface:=hardware_interface/VelocityJointInterface 
+                                tm_type:=transmission_interface/SimpleTransmission">
+
+            <transmission name="MiR_${locationprefix}_wheel_trans">
+                <type>${tm_type}</type>
+                <joint name="MiR__base_${locationprefix}_wheel_joint">
+                    <hardwareInterface>${hw_interface}</hardwareInterface>
+                </joint>
+                <actuator name="MiR__base_${locationprefix}_wheel_motor">
+                    <hardwareInterface>${hw_interface}</hardwareInterface>
+                    <mechanicalReduction>1</mechanicalReduction>
+                </actuator>
+            </transmission>
+            
+        </xacro:macro>
+        
+    <!-- ######################################## -->
+    <!-- ############## Macros ################## -->
+
+</robot>

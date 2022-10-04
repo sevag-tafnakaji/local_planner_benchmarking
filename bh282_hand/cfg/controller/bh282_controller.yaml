@@ -1,0 +1,37 @@
+
+bh282_gripper_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+     - BH282__base_to_finger_11_joint
+     - BH282__finger_11_to_finger_12_joint
+     - BH282__finger_12_to_finger_13_joint
+     - BH282__base_to_finger_21_joint
+     - BH282__finger_21_to_finger_22_joint
+     - BH282__finger_22_to_finger_23_joint
+     - BH282__finger_31_to_finger_32_joint
+     - BH282__finger_32_to_finger_33_joint
+  constraints:
+      goal_time: 0.6
+      stopped_velocity_tolerance: 0.05
+      BH282__base_to_finger_11_joint: {trajectory: 0.1, goal: 0.1}
+      BH282__finger_11_to_finger_12_joint: {trajectory: 0.1, goal: 0.1}
+      BH282__finger_12_to_finger_13_joint: {trajectory: 0.1, goal: 0.1}
+      BH282__base_to_finger_21_joint: {trajectory: 0.1, goal: 0.1}
+      BH282__finger_21_to_finger_22_joint: {trajectory: 0.1, goal: 0.1}
+      BH282__finger_22_to_finger_23_joint: {trajectory: 0.1, goal: 0.1}
+      BH282__finger_31_to_finger_32_joint: {trajectory: 0.1, goal: 0.1}
+      BH282__finger_32_to_finger_33_joint: {trajectory: 0.1, goal: 0.1}
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10
+joint_group_position_controller:
+  type: position_controllers/JointGroupPositionController
+  joints:
+     - BH282__base_to_finger_11_joint
+     - BH282__finger_11_to_finger_12_joint
+     - BH282__finger_12_to_finger_13_joint
+     - BH282__base_to_finger_21_joint
+     - BH282__finger_21_to_finger_22_joint
+     - BH282__finger_22_to_finger_23_joint
+     - BH282__finger_31_to_finger_32_joint
+     - BH282__finger_32_to_finger_33_joint

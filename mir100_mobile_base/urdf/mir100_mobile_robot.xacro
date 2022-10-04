@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="mir100_mobile_robot">
+
+    <xacro:include filename="$(find mir100_mobile_base)/urdf/common.urdf.xacro" />
+    <xacro:include filename="$(find mir100_mobile_base)/urdf/mir100.urdf.xacro" />
+    <xacro:include filename="$(find mir100_mobile_base)/urdf/mir100.transmission.xacro" />
+    <xacro:include filename="$(find mir100_mobile_base)/urdf/mir100.gazebo.xacro" />
+
+
+    <link name="MiR_footprint"/>
+
+    <!-- #################### MiR100 ##################### -->
+    <!-- ################################################# -->
+
+        <!-- #################### URDF ################### -->
+            
+            <xacro:MiR100_mobile_robot parent="MiR_footprint"/>
+
+        <!-- #################### URDF ################### -->
+
+
+        <!-- ############## Transmissions ################ -->
+
+            <xacro:MiR_wheel_transmission locationprefix="left"/>
+            <xacro:MiR_wheel_transmission locationprefix="right"/>
+
+        <!-- ############## Transmissions ################ -->
+
+
+        <!-- ############## Gazebo ####################### -->
+
+            <xacro:set_wheel_friction link="MiR_left_wheel_link" friction="200"/>
+            <xacro:set_wheel_friction link="MiR_right_wheel_link" friction="200"/>
+            <xacro:set_wheel_friction link="MiR_fl_caster_wheel_link" friction="1"/>
+            <xacro:set_wheel_friction link="MiR_fr_caster_wheel_link" friction="1"/>
+            <xacro:set_wheel_friction link="MiR_bl_caster_wheel_link" friction="1"/>
+            <xacro:set_wheel_friction link="MiR_br_caster_wheel_link" friction="1"/>
+
+            <xacro:MiR_controller_plugin_gazebo left_wheel_joint="MiR__base_left_wheel_joint" right_wheel_joint="MiR__base_right_wheel_joint" wheel_separation="${wheel_separation}" wheel_radius="${wheel_radius}"/>
+
+            <xacro:MiR100_gazebo/>
+            <xacro:p3d_base_controller/>            
+
+
+            <xacro:MiR100_ros_controller/>
+            
+        <!-- ############## Gazebo ####################### -->
+
+    <!-- ################################################# -->
+    <!-- #################### MiR100 ##################### -->
+
+</robot>

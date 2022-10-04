@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+
+<launch>
+    
+    <!-- Starting the world with a bunch of walls -->
+    <include file="$(find mobile_manipulator)/launch/includes/no_roof_small_warehouse.launch" />
+
+    <!-- send robot urdf to param server -->
+        <param name="robot_description" command="$(find xacro)/xacro '$(find mobile_manipulator)/urdf/dora_new.xacro'" />
+    
+    <!-- push robot_description to factory and spawn robot in gazebo -->
+        <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model Mobile_Manipulator -x 1.157362 -y 7.082126 -z 0.030888 -Y -1.5707963" respawn="false" output="screen" />
+
+    <!-- spawn table -->
+        <node name="spawn_table" pkg="gazebo_ros" type="spawn_model" args="-sdf -file $(find mobile_manipulator)/models/table/model_warehouse.sdf -model table" respawn="false" output="screen"/>
+    
+        <!-- <node name="spawn_beer" pkg="gazebo_ros" type="spawn_model" args="-sdf -file $(find mobile_manipulator)/models/beer/model_warehouse.sdf -model beer" respawn="false" output="screen"/> -->
+
+        <node name="spawn_kinect" pkg="gazebo_ros" type="spawn_model" args="-sdf -file $(find mobile_manipulator)/models/kinect/model_warehouse.sdf -model kinect" respawn="false" output="screen"/>
+    
+        <node name="spawn_drill" pkg="gazebo_ros" type="spawn_model" args="-sdf -file $(find mobile_manipulator)/models/cordless_drill/model.sdf -model drill" respawn="false" output="screen"/>
+    
+    <!-- spawn cluttering of boxes  -->
+    <node name="spawn_boxes" pkg="gazebo_ros" type="spawn_model" args="-sdf -file 
+        $(find mobile_manipulator)/worlds/warehouse/models/aws_robomaker_warehouse_ClutteringC_01/model.sdf 
+        -model boxes -x -1.554685 -y 0.105272 -z -0.017477 -Y -1.583185" respawn="false" output="screen"/>
+
+    <!-- spawn smaller cluttering of boxes  -->
+        <!-- <node name="spawn_boxes" pkg="gazebo_ros" type="spawn_model" args="-sdf -file 
+            $(find mobile_manipulator)/worlds/warehouse/models/aws_robomaker_warehouse_Bucket_01/model.sdf 
+            -model boxes -x -1.554685 -y 0.105272 -z -0.017477 -Y -1.583185" respawn="false" output="screen"/> -->
+
+
+
+    <!-- Load joint_state_controller -->
+        <rosparam file="$(find mobile_manipulator)/cfg/controller/joint_state_controller.yaml" command="load"/>
+    <!-- Start joint_state_controller -->
+        <node name="joint_state_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn joint_state_controller" respawn="false" output="screen"/>
+    
+    <!-- Robot state_publisher subscribes to /joint_states and calculats state of the system 
+            as transfer functions between the frames and publishes it as the State of the Robot as TF-->
+        <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+            <param name="publish_frequency" type="double" value="10.0" />
+        </node>
+
+
+    <!-- Load the controllers for UR10 -->
+        <rosparam file="$(find ur10_arm)/cfg/controller/ur10_controller.yaml" command="load"/>
+    <!-- Spawn the UR10 controllers -->
+        <node name="ur10_arm_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn ur10_arm_controller" 
+            respawn="false" output="screen" 
+        /> 
+    <!-- Load the controllers for the BH282 -->
+        <rosparam file="$(find bh282_hand)/cfg/controller/bh282_controller.yaml" command="load"/>
+     <!-- Spawn the BH282 controllers -->    
+        <node name="bh282_gripper_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn bh282_gripper_controller" 
+            respawn="false" output="screen" 
+        /> 
+
+    <!-- Load the controllers for the MiR100 -->
+        <rosparam file="$(find mir100_mobile_base)/cfg/controller/mir100_controller.yaml" command="load"/>
+
+    <!-- Spawn the MiR100 controllers --> 
+        <node name="mir100_mobile_base_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false"
+                    output="screen" ns="/" args="spawn mir100_controller">
+
+        </node>
+    <!-- Starts the moveit launch files created by the moveit setup assistant. Not very necessary here-->
+        <include file="$(find realistic_dora_moveit_config)/launch/move_group.launch"/>
+    <!-- Starts the Adaptive Monte Carlo Localization launch file gotten from mir_navigation--> 
+        <include file="$(find mir_navigation)/launch/amcl.launch">
+            <arg name="initial_pose_x" value="1.157362"/>
+            <arg name="initial_pose_y" value="7.082126"/>
+            <arg name="initial_pose_a" value="-1.5707963"/>
+        </include>
+    <!-- Starts the path planner gotten from mir_navigation -->
+        <include file="$(find mir_navigation)/launch/start_planner.launch">
+        <!-- Passing the 2D map file as parameter for easy interchangability -->
+            <arg name="map_file" value="$(find mir_navigation)/map/warehouse_map.yaml"/>
+            <arg name="local_planner" value="teb"/>
+        </include>
+    
+    <!-- Starting the Rviz window for visualisation of planning, localisation and poses -->
+    <!-- Basically everything needed for navigation should be visualised here. -->
+        <node name="navigation_rviz" pkg="rviz" type="rviz" args="-d $(find mir_navigation)/rviz/navigation.rviz"/> 
+        <node name="$(anon rviz)" pkg="rviz" type="rviz" respawn="false"
+            args="-d $(find realistic_dora_moveit_config)/launch/moveit.rviz" output="screen">
+        </node>
+
+    <!-- Supposedly this should filter out points that are too far away and too close to the sensor -->
+        <node name="b_rep117_laser_filter" pkg="mir_navigation" type="rep117_filter.py" output="screen">
+            <remap from="scan" to="b_scan" />
+            <remap from="scan_filtered" to="b_scan_rep117" />
+        </node>
+
+        <node name="f_rep117_laser_filter" pkg="mir_navigation" type="rep117_filter.py" output="screen">
+            <remap from="scan" to="f_scan" />
+            <remap from="scan_filtered" to="f_scan_rep117" />
+        </node>
+
+
+        <!-- DESCRITPION -->
+        <node pkg="ira_laser_tools" name="laserscan_multi_merger" type="laserscan_multi_merger" output="screen">
+            <param name="destination_frame" value="MiR_footprint"/>
+            <param name="cloud_destination_topic" value="/merged_cloud"/>
+            <param name="scan_destination_topic" value="/scan"/>
+            <param name="laserscan_topics" value ="/f_scan /b_scan" /> <!-- LIST OF THE LASER SCAN TOPICS TO SUBSCRIBE -->
+            <param name="angle_min" value="-2.0"/>
+            <param name="angle_max" value="2.0"/>
+            <param name="angle_increment" value="0.0058"/>
+            <param name="scan_time" value="0.0333333"/>
+            <param name="range_min" value="0.30"/>
+            <param name="range_max" value="50.0"/>
+        </node>
+
+        <!-- Python files that find the can, its centerpoint, 
+        publishes it as navigation goal and gets the gripper to it -->
+        <node name="camera_center_point" pkg="mobile_manipulator" type="point_cloud_subscriber.py"/>
+        <node name="navigation_publisher" pkg="mobile_manipulator" type="navigation_goal.py"/>
+        <node name="grasp_pose_subscriber" pkg="mobile_manipulator" type="grasp_pose_subscriber_sim.py" output="screen"/>
+
+        <include file = "$(find mobile_manipulator)/launch/pcl.launch"/>
+
+        <!-- Creating a transform between camera_link and fixed frame "map". Translations taken from model.sdf file of kinect camera, rotation is tuned by hand-->
+        <node pkg="tf2_ros" type="static_transform_publisher" name="static_tf_map_to_camera_link" args="-2.1 -3.61 1.65 0.63 3.14 1.1  map camera_link"/>
+        <!-- <node pkg="mobile_manipulator" type="camera_tf_from_model_state.py" name="camera_tf_from_model_state"/> -->
+        
+        <!-- <node name="camera_tf_from_model_state" pkg="mobile_manipulator" type="camera_tf_from_model_state.py"/> -->
+
+        <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="static_tf_map_to_odom_combined" args="0 0 0 0 0 0 map odom_combined"/> -->
+
+        <!-- unpausing after loading to avoid object table clipping -->
+        <node pkg="rosservice" type="rosservice" name="unpause_gazebo" args="call --wait /gazebo/unpause_physics" />
+
+        <node pkg="mobile_manipulator" type="point_cloud_grasp.py" name="cloud_data"/>
+
+        <!-- <node name="octomap_clearer" pkg="mobile_manipulator" type="octomap_clearer.py"/> -->
+</launch>

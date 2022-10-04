@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" ?>
+<robot name="dora" xmlns:xacro="http://ros.org/wiki/xacro">
+<xacro:include filename="$(find mobile_manipulator)/urdf/common.urdf.xacro" />
+<xacro:include filename="$(find ur10_arm)/urdf/ur10.urdf.xacro" />
+<xacro:include filename="$(find ur10_arm)/urdf/ur10.transmission.xacro" />
+<xacro:include filename="$(find ur10_arm)/urdf/ur10.gazebo.xacro" />
+<xacro:include filename="$(find mir100_mobile_base)/urdf/mir100.urdf.xacro" />
+<xacro:include filename="$(find mir100_mobile_base)/urdf/mir100.transmission.xacro" />
+<xacro:include filename="$(find mir100_mobile_base)/urdf/mir100.gazebo.xacro" />
+<xacro:include filename="$(find bh282_hand)/urdf/bh282.urdf.xacro" />
+<xacro:include filename="$(find bh282_hand)/urdf/bh282.transmission.xacro" />
+<xacro:include filename="$(find bh282_hand)/urdf/bh282.gazebo.xacro" />
+    <gazebo>
+        <plugin name="ros_control" filename="libgazebo_ros_control.so">
+        <robotNamespace>/</robotNamespace>
+        <controlPeriod>0.001</controlPeriod>
+        <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+        </plugin>
+    </gazebo>
+
+
+    <link name="MiR_footprint"/>
+
+    <!-- #################### MiR100 ##################### -->
+    <!-- ################################################# -->
+
+        <!-- #################### URDF ################### -->
+            
+            <xacro:MiR100_mobile_robot parent="MiR_footprint"/>
+
+        <!-- #################### URDF ################### -->
+
+
+        <!-- ############## Transmissions ################ -->
+
+            <xacro:MiR_wheel_transmission locationprefix="left"/>
+            <xacro:MiR_wheel_transmission locationprefix="right"/>
+
+        <!-- ############## Transmissions ################ -->
+
+
+        <!-- ############## Gazebo ####################### -->
+
+            <xacro:set_wheel_friction link="MiR_left_wheel_link" friction="200"/>
+            <xacro:set_wheel_friction link="MiR_right_wheel_link" friction="200"/>
+            <xacro:set_wheel_friction link="MiR_fl_caster_wheel_link" friction="1"/>
+            <xacro:set_wheel_friction link="MiR_fr_caster_wheel_link" friction="1"/>
+            <xacro:set_wheel_friction link="MiR_bl_caster_wheel_link" friction="1"/>
+            <xacro:set_wheel_friction link="MiR_br_caster_wheel_link" friction="1"/>
+
+            <!-- <xacro:MiR_controller_plugin_gazebo left_wheel_joint="MiR__base_left_wheel_joint" right_wheel_joint="MiR__base_right_wheel_joint" wheel_separation="${wheel_separation}" wheel_radius="${wheel_radius}"/> -->
+
+
+            <xacro:MiR100_gazebo/>
+            <xacro:p3d_base_controller/>            
+
+
+            
+        <!-- ############## Gazebo ####################### -->
+
+    <!-- ################################################# -->
+    <!-- #################### MiR100 ##################### -->
+
+    <!-- #################### UR10 Arm ################### -->
+    <!-- ################################################# -->
+
+        <!-- #################### URDF ################### -->
+            
+            <xacro:UR10_arm parent="controlbox_top">
+	        </xacro:UR10_arm>
+
+        <!-- #################### URDF ################### -->
+
+        <!-- ############## Transmissions ################ -->
+
+            <!-- 
+                hw_interface:="hardware_interface/PositionJointInterface"
+                hw_interface:="hardware_interface/EffortJointInterface" 
+            -->
+            
+            <!--
+            <xacro:UR10_joint_transmission joint="base_to_shoulder_pan" hw_interface="hardware_interface/EffortJointInterface"/>
+            <xacro:UR10_joint_transmission joint="shoulder_pan_to_upper_arm" hw_interface="hardware_interface/EffortJointInterface"/>
+            <xacro:UR10_joint_transmission joint="upper_arm_to_fore_arm" hw_interface="hardware_interface/EffortJointInterface"/>
+            <xacro:UR10_joint_transmission joint="fore_arm_to_wrist_1" hw_interface="hardware_interface/EffortJointInterface"/>
+            <xacro:UR10_joint_transmission joint="wrist_1_to_wrist_2" hw_interface="hardware_interface/EffortJointInterface"/>
+            <xacro:UR10_joint_transmission joint="wrist_2_to_wrist_3" hw_interface="hardware_interface/EffortJointInterface"/>
+            -->
+            <!-- Changed the 6 lines above to the 6 lines below. Works because a hw_interface default is set somewhere else -->
+            <xacro:UR10_joint_transmission joint="base_to_shoulder_pan"  />
+            <xacro:UR10_joint_transmission joint="shoulder_pan_to_upper_arm"  />
+            <xacro:UR10_joint_transmission joint="upper_arm_to_fore_arm"  />
+            <xacro:UR10_joint_transmission joint="fore_arm_to_wrist_1"  />
+            <xacro:UR10_joint_transmission joint="wrist_1_to_wrist_2"  />
+            <xacro:UR10_joint_transmission joint="wrist_2_to_wrist_3"  />
+            
+
+        <!-- ############## Transmissions ################ -->
+
+
+        <!-- ############## Gazebo ####################### -->
+
+            <xacro:UR10_gazebo/>
+         
+        <!-- ############## Gazebo ####################### -->
+
+
+    <!-- ################################################# -->
+    <!-- #################### UR10 Arm ################### -->
+  
+    <!-- ################################################# -->
+    <!-- ###################  Control Box ################ -->
+  <!-- THIS IS WHERE THE CONNECTION HAPPENS -->
+
+<link name="controlbox">
+	<visual>
+		<origin xyz="0 0 0.27" rpy="0 0 0"/>
+		<geometry>
+			<box size="0.75 0.535 0.53"/>
+		</geometry>
+		<material name="White">
+			<color rgba="1 1 1 1"/>
+		</material>
+	</visual>
+	<collision>
+		<origin xyz="0 0 0.27" rpy="0 0 0"/>
+		<geometry>
+			<box size="0.75 0.535 0.53"/>
+		</geometry>			
+	</collision>
+</link>
+
+  <joint name="mir_box_joint" type="fixed">
+    <origin xyz="0.038 0 0.352" rpy="0 0 0" />
+    <parent link="MiR_base_link" />
+    <child link="controlbox" />
+  </joint>
+
+<link name="controlbox_top">
+</link>
+
+  <joint name="box_joint" type="fixed">
+    <origin xyz="0 0 0.176" rpy="0 0 0" />
+    <parent link="controlbox" />
+    <child link="controlbox_top" />
+  </joint>
+
+    <!-- ################################################# -->
+    <!-- ###################  Control Box ################ -->
+
+
+    <!-- #################### Barret Hand ################### -->
+    <!-- #################################################### -->
+
+        <!-- #################### URDF ################### -->
+            
+            <xacro:BH282_hand parent="UR10_end_effector_link">
+	        </xacro:BH282_hand>
+
+        <!-- #################### URDF ################### -->
+
+        <!-- ############## Transmissions ################ -->
+
+            <!-- Finger 1-->
+
+                <xacro:BH282_joint_transmission joint="base_to_finger_11" hw_interface="hardware_interface/PositionJointInterface"/>
+                <xacro:BH282_joint_transmission joint="finger_11_to_finger_12" hw_interface="hardware_interface/PositionJointInterface"/>
+                <xacro:BH282_joint_transmission joint="finger_12_to_finger_13" hw_interface="hardware_interface/PositionJointInterface"/>
+
+            <!-- Finger 2-->
+
+                <xacro:BH282_joint_transmission joint="base_to_finger_21" hw_interface="hardware_interface/PositionJointInterface"/>
+                <xacro:BH282_joint_transmission joint="finger_21_to_finger_22" hw_interface="hardware_interface/PositionJointInterface"/>
+                <xacro:BH282_joint_transmission joint="finger_22_to_finger_23" hw_interface="hardware_interface/PositionJointInterface"/>
+                
+            <!-- Finger 3-->
+
+                <xacro:BH282_joint_transmission joint="finger_31_to_finger_32" hw_interface="hardware_interface/PositionJointInterface"/>
+                <xacro:BH282_joint_transmission joint="finger_32_to_finger_33" hw_interface="hardware_interface/PositionJointInterface"/>
+
+        <!-- ############## Transmissions ################ -->
+
+
+        <!-- ############## Gazebo ####################### -->
+
+            <xacro:BH282_gazebo/>
+
+        <!-- ############## Gazebo ####################### -->
+
+
+    <!-- #################################################### -->
+    <!-- #################### Barret Hand ################### -->
+
+</robot>
