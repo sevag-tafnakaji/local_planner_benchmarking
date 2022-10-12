@@ -17,12 +17,12 @@ if __name__ == "__main__":
     x = can_center[0] + can_radius*np.cos(t)
     y = can_center[1] + can_radius*np.sin(t)
     for i in range(0,10):
-        planned_path = os.path.abspath("benchmarking/data/DWB/"+world+"/benchmarking_paths_"+world+".xlsx")
-        real_path_dwb = os.path.abspath("benchmarking/data/DWB/"+world+"/benchmarking_paths_"+world+".xlsx")
-        real_path_teb = os.path.abspath("benchmarking/data/TEB/"+world+"/benchmarking_paths_"+world+".xlsx")
+        planned_path = os.path.abspath(__file__+"../../..")+"/data/DWB/"+world+"/benchmarking_paths_"+world+".xlsx"
+        real_path_dwb = os.path.abspath(__file__+"../../..")+"/data/DWB/"+world+"/benchmarking_paths_"+world+".xlsx"
+        real_path_teb = os.path.abspath(__file__+"../../..")+"/data/TEB/"+world+"/benchmarking_paths_"+world+".xlsx"
         if v2:
-            real_path_dwb = os.path.abspath("benchmarking/data/DWB/"+world+"/benchmarking_paths_"+world+"_dynamic_v2.xlsx")
-            real_path_teb = os.path.abspath("benchmarking/data/TEB/"+world+"/benchmarking_paths_"+world+"_dynamic_v2.xlsx")
+            real_path_dwb = os.path.abspath(__file__+"../../..")+"/data/DWB/"+world+"/benchmarking_paths_"+world+"_dynamic_v2.xlsx"
+            real_path_teb = os.path.abspath(__file__+"../../..")+"/data/TEB/"+world+"/benchmarking_paths_"+world+"_dynamic_v2.xlsx"
         planned_paths_raw = pd.read_excel(planned_path, sheet_name=i, header=0)
         actual_paths_raw_dwb = pd.read_excel(real_path_dwb, sheet_name=i, header=0)
         actual_paths_raw_teb = pd.read_excel(real_path_teb, sheet_name=i, header=0)
@@ -52,7 +52,7 @@ if __name__ == "__main__":
         fig = px.line(paths, x="x", y="y", color="path", title="planned vs. travelled path, trial"+str(trial_num))
         
         # print(i)
-        image_path = os.path.abspath("benchmarking/images/simple paths/path_trial_"+str(trial_num)+".png")
+        image_path = os.path.abspath(__file__+"../../..")+"/images/simple paths/path_trial_"+str(trial_num)+".png"
         # print(image_path)
         # fig.write_image(image_path)
         pio.write_image(fig, image_path, format="png")

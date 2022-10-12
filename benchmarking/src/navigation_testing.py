@@ -199,18 +199,18 @@ if __name__ == "__main__":
 
     # writing the file paths for each metrics
     if(is_dynamic):
-        file_path_ee = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_ee_path_"+world_name+"_dynamic.xlsx")
-        file_paths_paths = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_paths_"+world_name+"_dynamic.xlsx")
-        file_path_others = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_other_"+world_name+"_dynamic.xlsx")
+        file_path_ee = os.path.abspath(__file__+"../../..")+"/data/"+local_planner_alg+"/"+world_name+"/benchmarking_ee_path_"+world_name+"_dynamic.xlsx"
+        file_paths_paths = os.path.abspath(__file__+"../../..")+"/data/"+local_planner_alg+"/"+world_name+"/benchmarking_paths_"+world_name+"_dynamic.xlsx"
+        file_path_others = os.path.abspath(__file__+"../../..")+"/data/"+local_planner_alg+"/"+world_name+"/benchmarking_other_"+world_name+"_dynamic.xlsx"
     else:
-        file_path_ee = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_ee_path_"+world_name+".xlsx")
-        file_paths_paths = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_paths_"+world_name+".xlsx")
-        file_path_others = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_other_"+world_name+".xlsx")
+        file_path_ee = os.path.abspath(__file__+"../../..")+"/data/"+local_planner_alg+"/"+world_name+"/benchmarking_ee_path_"+world_name+".xlsx"
+        file_paths_paths = os.path.abspath(__file__+"../../..")+"/data/"+local_planner_alg+"/"+world_name+"/benchmarking_paths_"+world_name+".xlsx"
+        file_path_others = os.path.abspath(__file__+"../../..")+"/data/"+local_planner_alg+"/"+world_name+"/benchmarking_other_"+world_name+".xlsx"
     if move_arm:
-        file_path_arm_joints = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_moved_joints_"+world_name+".xlsx")
-        file_path_ee = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_moved_ee_path_"+world_name+".xlsx")
-        file_paths_paths = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_moved_paths_"+world_name+".xlsx")
-        file_path_others = os.path.abspath("benchmarking/data/"+local_planner_alg+"/"+world_name+"/benchmarking_moved_other_"+world_name+".xlsx")
+        file_path_arm_joints = os.path.abspath(__file__+"../../..")+"/data/"+local_planner_alg+"/"+world_name+"/benchmarking_moved_joints_"+world_name+".xlsx"
+        file_path_ee = os.path.abspath(__file__+"../../..")+"/data/"+local_planner_alg+"/"+world_name+"/benchmarking_moved_ee_path_"+world_name+".xlsx"
+        file_paths_paths = os.path.abspath(__file__+"../../..")+"/data/"+local_planner_alg+"/"+world_name+"/benchmarking_moved_paths_"+world_name+".xlsx"
+        file_path_others = os.path.abspath(__file__+"../../..")+"/data/"+local_planner_alg+"/"+world_name+"/benchmarking_moved_other_"+world_name+".xlsx"
     
     # used for getting the final pose of the robot
     model = GetModelStateRequest()

@@ -236,7 +236,7 @@ def calc_errors_with_avg(expected_poses, actual_poses):
 def plot_error(error_data, fig_title):
     fig = px.scatter_3d(error_data, x="x", y="y", z="z", color="type", title=fig_title)
     # fig.show()
-    image_path = os.path.abspath("benchmarking/images/"+alg.upper()+"/ee_path_moving_smoothness/"+alg.upper()+"_ee_path_moving_smoothness_"+world+".png")
+    image_path = os.path.abspath(__file__+"../../..")+"/images/"+alg.upper()+"/ee_path_moving_smoothness/"+alg.upper()+"_ee_path_moving_smoothness_"+world+".png"
     fig.write_image(image_path)
 
 
@@ -247,15 +247,15 @@ if __name__ == "__main__":
     x_offset, y_offset, z_offset = 0.188, 0, 1.007298
     
     for alg in algs:
-        file_path = os.path.abspath("benchmarking/data/"+alg.upper()+"/ee_path_moving_smoothness.xlsx")
+        file_path = os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/ee_path_moving_smoothness.xlsx"
         for world in worlds:
             integrated_errors = []
             avg_errors = np.zeros((10,3))
             fig_title = "end effector smoothness of "+alg.upper()+" in "+world+" when moving the arm"
             for i in range(1,10):
-                joint_value_raw = pd.read_excel(os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world+"/benchmarking_moved_joints_"+world+".xlsx"),i, index_col=0)
-                ee_smoothness_raw = pd.read_excel(os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world+"/benchmarking_moved_ee_path_"+world+".xlsx"), i, index_col=0)
-                travelled_path_raw = pd.read_excel(os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world+"/benchmarking_moved_paths_"+world+".xlsx"), i, index_col=0)
+                joint_value_raw = pd.read_excel(os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/"+world+"/benchmarking_moved_joints_"+world+".xlsx",i, index_col=0)
+                ee_smoothness_raw = pd.read_excel(os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/"+world+"/benchmarking_moved_ee_path_"+world+".xlsx", i, index_col=0)
+                travelled_path_raw = pd.read_excel(os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/"+world+"/benchmarking_moved_paths_"+world+".xlsx", i, index_col=0)
 
                 ee_pose_data, joint_value_data, path_travelled_data = process_data(ee_smoothness_raw, joint_value_raw, travelled_path_raw)
                 

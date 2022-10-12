@@ -2,10 +2,11 @@
 
 <launch>
     
-    <arg name="world_file" value="$(find local_planner_benchmark)/worlds/office/office.world"/>
-    <arg name="map_file" value="$(find mir_navigation)/map/office.yaml"/>
+    <arg name="world_file" value="$(find local_planner_benchmark)/worlds/office/office.world"/> 
     <arg name="world_name" value="office"/>
-    <arg name="dynamic" default="true"/>
+    <arg name="dynamic" default="false"/>
+    <arg name="map_file" value="$(find mir_navigation)/map/office.yaml" if="$(arg dynamic)"/>
+    <arg name="map_file" value="$(find mir_navigation)/map/office_static.yaml" unless="$(arg dynamic)"/>
     <arg name="move_arm" default="false"/>
     <arg name="initial_x" value="18.081900"/>
     <arg name="initial_y" value="14.538100"/>
@@ -15,6 +16,14 @@
     <arg name="trial_arg" default="1"/>
     <arg name="local_planner" default="dwb"/>
 
+    <!-- <group if="$(arg dynamic)">
+        <arg name="map_file" value="$(find mir_navigation)/map/office.yaml"/>
+    </group>
+
+    <group unless="$(arg dynamic)">
+        <arg name="map_file" value="$(find mir_navigation)/map/office_static.yaml"/>
+    </group> -->
+    
     <group if="$(arg move_arm)">
         <include file="$(find realistic_dora_moveit_config)/launch/move_group.launch"/>
         <node name="get_joint_states" pkg="local_planner_benchmark" type="ee_smoothness_dynamic.py"/>

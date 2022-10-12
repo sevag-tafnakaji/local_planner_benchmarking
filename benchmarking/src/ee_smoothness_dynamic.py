@@ -5,7 +5,7 @@ import sys
 
 folder = path.Path(__file__).abspath()
 sys.path.append(folder.parent.parent)
-import move_group_python
+from mobile_manipulator import move_group_python
 from mobile_manipulator.msg import JointStates
 from actionlib import GoalStatusArray
 from sensor_msgs.msg import JointState

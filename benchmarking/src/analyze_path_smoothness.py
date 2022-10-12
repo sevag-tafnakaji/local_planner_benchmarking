@@ -40,27 +40,29 @@ def plot_angles_from_path(path, fig_title, alg, world, trial_num, dynamic, moved
             data["angle"].append(0)
     fig = px.scatter_3d(data, x="x", y="y", z="angle", color="angle", title=fig_title)
     # fig.show()
-    image_path = os.path.abspath("benchmarking/images/"+alg.upper()+"/path_smoothness/path_smoothness_"+world+"_trial"+str(trial_num)+".png")
+    image_path = os.path.abspath(__file__+"../../..")+"/images/"+alg.upper()+"/path_smoothness/path_smoothness_"+world+"_trial"+str(trial_num)+".png"
     if dynamic:
-        image_path = os.path.abspath("benchmarking/images/"+alg.upper()+"/path_smoothness/dynamic_path_smoothness_"+world+"_trial"+str(trial_num)+".png")
+        image_path = os.path.abspath(__file__+"../../..")+"/images/"+alg.upper()+"/path_smoothness/dynamic_path_smoothness_"+world+"_trial"+str(trial_num)+".png"
     if moved:
-        image_path = os.path.abspath("benchmarking/images/"+alg.upper()+"/path_smoothness/path_moved_smoothness_"+world+"_trial"+str(trial_num)+".png")
+        image_path = os.path.abspath(__file__+"../../..")+"/images/"+alg.upper()+"/path_smoothness/path_moved_smoothness_"+world+"_trial"+str(trial_num)+".png"
+    camera = dict(eye=dict(x=1.0, y=-1.5, z=1.2))
+    fig.update_layout(scene_camera=camera, scene=dict(xaxis=dict(range=[0,max(data["x"])*1.2]), yaxis=dict(range=[0,max(data["y"])*1.2]), zaxis=dict(range=[0,max(data["angle"])*1.2])))
     fig.write_image(image_path)
     return path_smoothness
 
 if __name__ == "__main__":
-    alg = "teb"
+    alg = "dwb"
     worlds = ["office"]
     # world_name = "complex_maze"
     dynamic = False
-    moving = True
+    moving = False
     # path_smoothnesses = {"world": [], "smoothness": [], "datatype": []}
     # path_smoothnesses = pd.DataFrame(path_smoothnesses)
-    file_path = os.path.abspath("benchmarking/data/"+alg.upper()+"/path_smoothness.xlsx")
+    file_path = os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/path_smoothness.xlsx"
     if dynamic:
-        file_path = os.path.abspath("benchmarking/data/"+alg.upper()+"/path_smoothness_dynamic.xlsx")
+        file_path = os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/path_smoothness_dynamic.xlsx"
     if moving:
-        file_path = os.path.abspath("benchmarking/data/"+alg.upper()+"/path_moving_smoothness.xlsx")
+        file_path = os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/path_moving_smoothness.xlsx"
     path_smoothnesses = [pd.DataFrame() for i in range(0,len(worlds))]
     for n,world in enumerate(worlds):
         print("Currently working on "+world)
@@ -68,11 +70,11 @@ if __name__ == "__main__":
         average_data = {"smoothness": [], "datatype": ["average"]} 
         for j in range(0,10):
             print("Trial Nr."+str(j+1))
-            data_file = pd.read_excel(os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_paths_"+world.lower()+".xlsx"), sheet_name=j, header=0)
+            data_file = pd.read_excel(os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_paths_"+world.lower()+".xlsx", sheet_name=j, header=0)
             if dynamic:
-                data_file = pd.read_excel(os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_paths_"+world.lower()+"_dynamic.xlsx"), sheet_name=j, header=0)
+                data_file = pd.read_excel(os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_paths_"+world.lower()+"_dynamic.xlsx", sheet_name=j, header=0)
             if moving:
-                data_file = pd.read_excel(os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_moved_paths_"+world.lower()+".xlsx"), sheet_name=j, header=0)
+                data_file = pd.read_excel(os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_moved_paths_"+world.lower()+".xlsx", sheet_name=j, header=0)
             travelled_path = extract_path(data_file)
             figure_title = "angles along path, "+alg.upper()+" in "+world+": Trial "+str(j+1)
             if dynamic:

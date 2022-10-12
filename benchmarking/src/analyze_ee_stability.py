@@ -45,11 +45,11 @@ def calculate_error(world_name, alg, dynamic):
     """
     errors = np.zeros((9,3))
     for j in range(1,10):
-        ee_file = pd.read_excel(os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world_name.lower()+"/benchmarking_ee_path_"+world_name.lower()+".xlsx"),sheet_name=j, header=0)
-        mb_file = pd.read_excel(os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world_name.lower()+"/benchmarking_paths_"+world_name.lower()+".xlsx"),sheet_name=j, header=0, dtype=list)
+        ee_file = pd.read_excel(os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/"+world_name.lower()+"/benchmarking_ee_path_"+world_name.lower()+".xlsx",sheet_name=j, header=0)
+        mb_file = pd.read_excel(os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/"+world_name.lower()+"/benchmarking_paths_"+world_name.lower()+".xlsx",sheet_name=j, header=0, dtype=list)
         if dynamic:
-            ee_file = pd.read_excel(os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world_name.lower()+"/benchmarking_ee_path_"+world_name.lower()+"_dynamic.xlsx"),sheet_name=j, header=0)
-            mb_file = pd.read_excel(os.path.abspath("benchmarking/data/"+alg.upper()+"/"+world_name.lower()+"/benchmarking_paths_"+world_name.lower()+"_dynamic.xlsx"),sheet_name=j, header=0, dtype=list)
+            ee_file = pd.read_excel(os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/"+world_name.lower()+"/benchmarking_ee_path_"+world_name.lower()+"_dynamic.xlsx",sheet_name=j, header=0)
+            mb_file = pd.read_excel(os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/"+world_name.lower()+"/benchmarking_paths_"+world_name.lower()+"_dynamic.xlsx",sheet_name=j, header=0, dtype=list)
 
         # Getting the position data
         travelled_path = extract_path(mb_file)
@@ -102,28 +102,40 @@ def plot_data_with_average(array, fig_title, alg, world):
     # print(data)
     fig = px.scatter_3d(data, x="x", y="y", z="z", color="datatype", title=fig_title)
     # fig.show()
-    image_path = os.path.abspath("benchmarking/images/"+alg.upper()+"/ee_path_smoothness/ee_path_smoothness_"+world+".png")
+    image_path = os.path.abspath(os.path.abspath(__file__+"../../..")+"/images/"+alg.upper()+"/ee_path_smoothness/ee_path_smoothness_"+world+".png")
     if dynamic:
-        image_path = os.path.abspath("benchmarking/images/"+alg.upper()+"/ee_path_smoothness/dynamic_ee_path_smoothness_"+world+".png")
+        image_path = os.path.abspath(os.path.abspath(__file__+"../../..")+"/images/"+alg.upper()+"/ee_path_smoothness/dynamic_ee_path_smoothness_"+world+".png")
+    camera = dict(eye=dict(x=1.0, y=-1.5, z=1.2))
+    fig.update_layout(scene_camera=camera, scene=dict(xaxis=dict(range=[0,max(data["x"]*1.2)]), yaxis=dict(range=[0,max(data["y"]*1.2)]), zaxis=dict(range=[0,max(data["z"]*1.2)])))
     fig.write_image(image_path)
     return data
 
 if __name__ == "__main__":
-    alg = "dwb"
-    worlds = ["new_maze", "complex_maze", "office", "old_maze", "playground", "warehouse"]
-    # world_name = "new_maze"
-    dynamic = False
-    file_path = os.path.abspath("benchmarking/data/"+alg.upper()+"/ee_path_smoothness.xlsx")
-    if dynamic:
-        file_path = os.path.abspath("benchmarking/data/"+alg.upper()+"/ee_path_smoothness_dynamic.xlsx")
-    errors = [pd.DataFrame({}) for i in range(0,len(worlds))]
+    algs = ["teb"]
+    dynamics = [False]
+    worlds = []
+    for alg in algs:
+        for dynamic in dynamics:
+            if dynamic:
+                worlds = ["playground", "office"]
+                if alg == "teb":
+                    worlds.append("warehouse")
+            else:
+                if alg == "dwb":
+                    worlds = ["new_maze", "office", "old_maze", "playground", "warehouse"]
+                else:
+                    worlds = ["office", "playground", "warehouse"]
+            file_path = os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/ee_path_smoothness.xlsx"
+            if dynamic:
+                file_path = os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/ee_path_smoothness_dynamic.xlsx"
+            errors = [pd.DataFrame({}) for i in range(0,len(worlds))]
 
-    for i,world in enumerate(worlds):
-        print("Currently working on "+world)
-        figure_title = "end effector smoothness of "+alg.upper()+" in "+world
-        if dynamic:
-            figure_title = "end effector smoothness of "+alg.upper()+" in dynamic "+world
-        calculated_errors = calculate_error(world,alg,dynamic)
-        errors[i] = plot_data_with_average(calculated_errors, figure_title, alg, world)
-        # print(errors[i])
-        append_df_to_excel(file_path, errors[i], world)
+            for i,world in enumerate(worlds):
+                print("Currently working on "+world)
+                figure_title = "end effector smoothness of "+alg.upper()+" in "+world
+                if dynamic:
+                    figure_title = "end effector smoothness of "+alg.upper()+" in dynamic "+world
+                calculated_errors = calculate_error(world,alg,dynamic)
+                errors[i] = plot_data_with_average(calculated_errors, figure_title, alg, world)
+                # print(errors[i])
+                append_df_to_excel(file_path, errors[i], world)

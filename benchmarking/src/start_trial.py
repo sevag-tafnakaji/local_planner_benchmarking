@@ -1,7 +1,7 @@
 import roslaunch
 import rospy
 from sys import argv
-
+import os
 # custom error type. 
 class ProgramFailed(Exception):
     """Raised when the program failes to exceute its intended function"""
@@ -32,7 +32,8 @@ def start_roslaunch(world_name, dynamic, trial, local_planner, is_moving):
                               (Example: "dwb", "teb")
     """
     #check the example for explenations
-    cli_args = [f'/home/sevag/ur_ws/src/DORA/mobile_manipulator/launch/benchmarking/{world_name}_benchmark.launch',f'dynamic:={dynamic}',f"trial_arg:={trial}", f"local_planner:={local_planner}", f'move_arm:={is_moving}']
+    path_to_launch = os.path.abspath("../launch")+"/{}_benchmark.launch".format(world_name)
+    cli_args = [path_to_launch,f'dynamic:={dynamic}',f"trial_arg:={trial}", f"local_planner:={local_planner}", f'move_arm:={is_moving}']
     roslaunch_args = cli_args[1:]
     roslaunch_file = [(roslaunch.rlutil.resolve_launch_arguments(cli_args)[0], roslaunch_args)]
     uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
