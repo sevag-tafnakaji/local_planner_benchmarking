@@ -38,7 +38,7 @@ def plot_angles_from_path(path, fig_title, alg, world, trial_num, dynamic, moved
             data["angle"].append(alphas[j])
         else:
             data["angle"].append(0)
-    fig = px.scatter_3d(data, x="x", y="y", z="angle", color="angle", title=fig_title)
+    fig = px.scatter_3d(data, x="x", y="y", z="angle", color="angle")
     # fig.show()
     image_path = os.path.abspath(__file__+"../../..")+"/images/"+alg.upper()+"/path_smoothness/path_smoothness_"+world+"_trial"+str(trial_num)+".png"
     if dynamic:
@@ -46,48 +46,58 @@ def plot_angles_from_path(path, fig_title, alg, world, trial_num, dynamic, moved
     if moved:
         image_path = os.path.abspath(__file__+"../../..")+"/images/"+alg.upper()+"/path_smoothness/path_moved_smoothness_"+world+"_trial"+str(trial_num)+".png"
     camera = dict(eye=dict(x=1.0, y=-1.5, z=1.2))
-    fig.update_layout(scene_camera=camera, scene=dict(xaxis=dict(range=[0,max(data["x"])*1.2]), yaxis=dict(range=[0,max(data["y"])*1.2]), zaxis=dict(range=[0,max(data["angle"])*1.2])))
+    side = 900
+    fig.update_layout(scene_camera=camera, 
+        scene=dict(xaxis=dict(range=[min(data["x"])*1.2,max(data["x"])*1.2]), 
+                   yaxis=dict(range=[min(data["y"])*1.2,max(data["y"])*1.2]), 
+                   zaxis=dict(range=[min(data["angle"])*1.2,max(data["angle"])*1.2])),
+        width=side, height=side, coloraxis=dict(colorbar=dict(orientation="h")),
+        coloraxis_colorbar_y = 0.90, font=dict(size=17))
     fig.write_image(image_path)
     return path_smoothness
 
 if __name__ == "__main__":
-    alg = "dwb"
-    worlds = ["office"]
+    algs = ["dwb", "teb"]
     # world_name = "complex_maze"
-    dynamic = False
+    dynamics = [False, True]
     moving = False
     # path_smoothnesses = {"world": [], "smoothness": [], "datatype": []}
     # path_smoothnesses = pd.DataFrame(path_smoothnesses)
-    file_path = os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/path_smoothness.xlsx"
-    if dynamic:
-        file_path = os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/path_smoothness_dynamic.xlsx"
-    if moving:
-        file_path = os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/path_moving_smoothness.xlsx"
-    path_smoothnesses = [pd.DataFrame() for i in range(0,len(worlds))]
-    for n,world in enumerate(worlds):
-        print("Currently working on "+world)
-        world_data = {"smoothness": [], "datatype": []}
-        average_data = {"smoothness": [], "datatype": ["average"]} 
-        for j in range(0,10):
-            print("Trial Nr."+str(j+1))
-            data_file = pd.read_excel(os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_paths_"+world.lower()+".xlsx", sheet_name=j, header=0)
+    for alg in algs:
+        for dynamic in dynamics:
+            worlds = ["playground", "office", "warehouse"]
+            if alg == "dwb" and dynamic:
+                worlds = ["playground", "office"]
+            file_path = os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/path_smoothness.xlsx"
             if dynamic:
-                data_file = pd.read_excel(os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_paths_"+world.lower()+"_dynamic.xlsx", sheet_name=j, header=0)
+                file_path = os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/path_smoothness_dynamic.xlsx"
             if moving:
-                data_file = pd.read_excel(os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_moved_paths_"+world.lower()+".xlsx", sheet_name=j, header=0)
-            travelled_path = extract_path(data_file)
-            figure_title = "angles along path, "+alg.upper()+" in "+world+": Trial "+str(j+1)
-            if dynamic:
-                figure_title = "angles along path, "+alg.upper()+" in dynamic "+world+": Trial "+str(j+1)
-            if moving:
-                figure_title = "angles along path, "+alg.upper()+" in "+world+" while moving the arm: Trial "+str(j+1)
-            smoothness = plot_angles_from_path(travelled_path, figure_title,alg,world,j+1, dynamic,moving)
-            world_data["smoothness"].append(smoothness)
-            world_data["datatype"].append("trial")
-        average_smooth = np.average(world_data["smoothness"])
-        average_data["smoothness"] = average_smooth
-        world_data = pd.DataFrame(world_data)
-        average_data = pd.DataFrame(average_data)
-        path_smoothnesses[n] = pd.concat([world_data, average_data], ignore_index=True, axis=0)
-        
-        append_df_to_excel(file_path, path_smoothnesses[n],world)
+                file_path = os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/path_moving_smoothness.xlsx"
+            path_smoothnesses = [pd.DataFrame() for i in range(0,len(worlds))]
+            for n,world in enumerate(worlds):
+                print("Currently working on "+world)
+                world_data = {"smoothness": [], "datatype": []}
+                average_data = {"smoothness": [], "datatype": ["average"]} 
+                for j in range(0,10):
+                    print("Trial Nr."+str(j+1))
+                    data_file = pd.read_excel(os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_paths_"+world.lower()+".xlsx", sheet_name=j, header=0)
+                    if dynamic:
+                        data_file = pd.read_excel(os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_paths_"+world.lower()+"_dynamic.xlsx", sheet_name=j, header=0)
+                    if moving:
+                        data_file = pd.read_excel(os.path.abspath(__file__+"../../..")+"/data/"+alg.upper()+"/"+world.lower()+"/benchmarking_moved_paths_"+world.lower()+".xlsx", sheet_name=j, header=0)
+                    travelled_path = extract_path(data_file)
+                    figure_title = "angles along path, "+alg.upper()+" in "+world+": Trial "+str(j+1)
+                    if dynamic:
+                        figure_title = "angles along path, "+alg.upper()+" in dynamic "+world+": Trial "+str(j+1)
+                    if moving:
+                        figure_title = "angles along path, "+alg.upper()+" in "+world+" while moving the arm: Trial "+str(j+1)
+                    smoothness = plot_angles_from_path(travelled_path, figure_title,alg,world,j+1, dynamic,moving)
+                    world_data["smoothness"].append(smoothness)
+                    world_data["datatype"].append("trial")
+                average_smooth = np.average(world_data["smoothness"])
+                average_data["smoothness"] = average_smooth
+                world_data = pd.DataFrame(world_data)
+                average_data = pd.DataFrame(average_data)
+                path_smoothnesses[n] = pd.concat([world_data, average_data], ignore_index=True, axis=0)
+                
+                # append_df_to_excel(file_path, path_smoothnesses[n],world)

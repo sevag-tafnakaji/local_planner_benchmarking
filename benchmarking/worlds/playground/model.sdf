@@ -1,5 +1,5 @@
 <?xml version='1.0'?>
-<sdf version='1.7'>
+<sdf version='1.6'>
   <model name='playground'>
     <pose>0.571182 -0.212849 0 0 -0 0</pose>
     <link name='Wall_0'>
