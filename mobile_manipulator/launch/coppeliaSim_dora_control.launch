@@ -11,7 +11,7 @@
 
     <!-- send robot urdf to param server -->
         <!-- <param name="robot_description" command="$(find xacro)/xacro '$(find ur10_arm)/urdf/ur10_arm.xacro'" /> -->
-        <param name="robot_description" command="$(find xacro)/xacro $(find ur10_arm)/urdf/ur10_arm.urdf"/>
+        <param name="robot_description" command="$(find xacro)/xacro $(find mobile_manipulator)/urdf/dora.xacro"/>
     <!-- push robot_description to factory and spawn robot in gazebo -->
         <!-- <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model UR10_ARM" respawn="false" output="screen" /> -->
 
@@ -29,6 +29,29 @@
         <node name="ur10_arm_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false"
                     output="screen" ns="/" args="spawn ur10_arm_controller"
         /> 
+
+    <!-- Load the controllers for the MiR100 -->
+        <rosparam file="$(find mir100_mobile_base)/cfg/controller/mir100_controller.yaml" command="load"/>
+
+    <!-- Spawn the MiR100 controllers --> 
+        <node name="mir100_mobile_base_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false"
+                    output="screen" ns="/" args="spawn mir100_controller">
+
+        </node>
+
+    <!-- Load the controllers for the BH282 -->
+        <rosparam file="$(find bh282_hand)/cfg/controller/bh282_controller.yaml" command="load"/>
+    <!-- Spawn the BH282 controllers -->    
+        <node name="bh282_hand_controller_spawner" pkg="controller_manager" type="controller_manager" args="spawn bh282_gripper_controller" 
+            respawn="false" output="screen" 
+        /> 
+
+    <!-- Starts the moveit launch files created by the moveit setup assistant. Not very necessary here-->
+        <!-- <include file="$(find realistic_dora_moveit_config)/launch/move_group.launch"/> -->
+
+
+    <!-- Load joint_state_controller -->
+        <rosparam file="$(find mobile_manipulator)/cfg/controller/joint_state_controller.yaml" command="load"/>
         
         <node name="comparison_rviz" pkg="rviz" type="rviz" args="-d $(find ur10_arm)/cfg/rviz.rviz"/>
 
