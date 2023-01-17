@@ -59,14 +59,22 @@
   <depend>moveit</depend>
   <depend>rgbd_launch</depend>
   <depend>gazebo_ros</depend> 
+  <depend>ira_laser_tools</depend>
+
+  <!-- Robot dependencies -->
   <build_export_depend>bh282_hand</build_export_depend>
   <build_export_depend>mir100_mobile_base</build_export_depend>
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>ur10_arm</build_export_depend>
+
+  <!-- Robot dependencies -->
   <exec_depend>bh282_hand</exec_depend>
   <exec_depend>mir100_mobile_base</exec_depend>
-  <exec_depend>roscpp</exec_depend>
   <exec_depend>ur10_arm</exec_depend>
+
+  <exec_depend>roscpp</exec_depend>
+  
+  <!-- MoveIt dependencies -->
   <exec_depend>moveit_ros_move_group</exec_depend>
   <exec_depend>moveit_fake_controller_manager</exec_depend>
   <exec_depend>moveit_kinematics</exec_depend>
@@ -85,6 +93,7 @@
   <exec_depend>ros_numpy</exec_depend>
   <exec_depend>octomap</exec_depend>
   <exec_depend>message_runtime</exec_depend>
+  
   <!-- <exec_depend>ros-noetic-rgbd-launch</exec_depend> -->
   <!-- <exec_depend>ros-noetic-openni2-camera</exec_depend> -->
   <!-- <exec_depend>ros-noetic-openni2-launch</exec_depend> -->

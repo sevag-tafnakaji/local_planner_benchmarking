@@ -5,6 +5,16 @@ for navigation of mobile manipulators" submitted to SII 2023.
 
 The purpose of the code is to benchmark local planners found in the ROS framework. The benchmarking is done through simulations in Gazebo. Our simulations were run using a mobile manipulator that is found in the Chalmers University of Technology labs called DORA, but any mobile manipulator can be used to run the benchmark.
 
+# Dependencies
+
+Before starting the benchmarking, make sure that you have all the necessary ros packages installed. You can do this by running
+
+```
+rosdep install --from-paths src --ignore-src -r -y
+```
+From the catkin workspace after downloading this package into your src folder.
+
+For the python code, 
 
 # Structure
 
