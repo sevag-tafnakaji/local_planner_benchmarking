@@ -1,7 +1,10 @@
 # Local Planner Benchmarking
 
-This is the code for "Benchmarking local motion planners
-for navigation of mobile manipulators" submitted to SII 2023.
+This is the code for Benchmarking local motion planners for navigation of mobile manipulators, IEEE/SICE International Symposium on System Integration (SII), 2023.
+
+<img src="benchmarking.png" height="300">
+
+This is the code for Benchmarking local motion planners for navigation of mobile manipulators, IEEE/SICE International Symposium on System Integration (SII), 2023.
 
 The purpose of the code is to benchmark local planners found in the ROS framework. The benchmarking is done through simulations in Gazebo. Our simulations were run using a mobile manipulator that is found in the Chalmers University of Technology labs called DORA, but any mobile manipulator can be used to run the benchmark.
 
@@ -49,10 +52,14 @@ The default parameters are "new_maze", "DWB", not dynamic, arm stationary, 10 tr
 If you found the code useful, please consider citing our paper:
 
 ```
-@ARTICLE{benchmarking-local-planners,
+@INPROCEEDINGS{10039133,
   author={Tafnakaji, Sevag and Hajieghrary, Hadi and Teixeira, Quentin and Bekiroglu, Yasemin},
-  journal={}, 
+  booktitle={2023 IEEE/SICE International Symposium on System Integration (SII)}, 
   title={Benchmarking local motion planners for navigation of mobile manipulators}, 
-  year={2022},
-}
+  year={2023},
+  volume={},
+  number={},
+  pages={1-6},
+  doi={10.1109/SII55687.2023.10039133}}
+
 ```
